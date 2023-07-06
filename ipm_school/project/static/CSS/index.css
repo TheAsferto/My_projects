@@ -1,0 +1,147 @@
+/*@import url('https://fonts.googleapis.com/css2?family=Dela Gothic One');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat');*/
+@font-face {
+    font-family: 'Dela Gothic One';
+    src: URL('../fonts/DelaGothicOne-Regular.ttf') format('truetype');
+  }
+  @font-face {
+    font-family: 'Montserrat';
+    src: URL('../fonts/Montserrat-Regular.otf') format('truetype');
+  }
+
+body{
+    background-color: #ffffff;
+    -webkit-font-smoothing: antialiased;
+    -webkit-overflow-scrolling: touch;
+    margin-top: 0px;
+}
+header {
+    background-color: rgb(255, 255, 255);
+    padding-top: 10px; 
+    padding-bottom: 10px; 
+}
+.footer {
+    background-color: rgb(255, 255, 255);
+    padding-top: 10px; 
+    padding-bottom: 10px; 
+}
+
+
+.btn-logo-style  {
+    font-family: "Dela Gothic One";
+    font-weight: regular;
+    font-size: 24px;
+    color: rgb(15, 15, 15);
+    text-decoration: none;
+} 
+.btn-logo-style:hover {
+    color: rgb(15, 15, 15);  
+}
+.btn-logo-style:active {
+    color: rgb(15, 15, 15);  
+}
+
+.hmenu-gstyle {
+    font-family: "Montserrat";
+    font-weight: 500;
+    font-size: 18px;
+    color: rgb(58, 58, 58);
+}
+
+.btn-hmenu {
+    font-family: "Montserrat";
+    font-weight: thin;
+    font-size: 19px;
+    color: rgb(0, 0, 0); 
+    text-decoration: none;
+}
+.btn-hmenu:hover {
+    color: rgb(39, 39, 39); 
+}
+.btn-hmenu:active {
+    color: rgb(124, 124, 124); 
+}
+
+.btn-login {
+    font-family: "Montserrat";
+    font-weight: bold;
+    font-size: 19px;
+    color: rgb(0, 0, 0); 
+    text-decoration: none;
+}
+.btn-login:hover {
+    color: rgb(39, 39, 39); 
+}
+.btn-login:active {
+    color: rgb(124, 124, 124); 
+}
+
+.btn-reg {
+    background-color: rgb(49,120,139);
+    border: 3px solid  rgb(49,120,139); 
+    height: 50px;
+    width: 185px;
+    border-radius: 17px;
+    font-family: "Montserrat";
+    font-weight: bold;
+    font-size: 19px;
+    color: rgb(255, 255, 255);
+}
+.btn-reg:hover {
+    border: 3px solid rgb(31, 76, 88); 
+}
+.btn-reg:active {
+    background-color: rgb(31, 76, 88);
+    border: 3px solid rgb(31, 76, 88); 
+}
+
+.colored-text {
+    font-family: "Montserrat";
+    font-weight: bold;
+    font-size: 16px;
+    color: rgb(49,120,139);
+}
+.big-text {
+    font-family: "Dela Gothic One";
+    font-weight: bold;
+    font-size: 56px;
+    color: rgb(0, 0, 0);  
+}
+.main-text {
+    font-family: "Montserrat";
+    font-weight: normal;
+    font-size: 18px;
+    color: rgb(117, 117, 117); 
+}
+.btn-avrg {
+    background-color: rgb(195,220,227); 
+    border: 3px solid rgb(195,220,227);
+    height: 50px;
+    width: auto;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-radius: 50px;
+    font-family: "Montserrat";
+    font-weight: bold;
+    font-size: 19px;
+    color: rgb(49,120,139);
+}
+.btn-avrg:hover {
+    border: 3px solid rgb(146, 177, 185); 
+}
+.btn-avrg:active {
+    background-color: rgb(146, 177, 185); 
+    border: 3px solid rgb(146, 177, 185); 
+} 
+
+
+
+
+
+/*
+.visible-grid  {
+    background-color: rgba(204, 0, 255, 0.089);
+    border: 1px solid rgb(110, 47, 139);
+    box-sizing: border-box;
+    
+}
