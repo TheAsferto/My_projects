@@ -14,7 +14,7 @@ def authorization(request):
     return render(request, "authorization.html", {})
 
 def page_student_lk(request):
-    return render(request, "page_student_lk.html", {})
+    return render(request, "student/page_student_lk.html", {})
 
 def page_teacher_lk(request):
     return render(request, "page_teacher_lk.html", {})
@@ -24,3 +24,18 @@ def page_student_class(request):
 
 def page_teacher_class(request):
     return render(request, "page_teacher_class.html", {})
+
+# example
+# class Regions(View):
+#     def get(self, request):
+#         self.regions = [
+#             'Москва',
+#             'Московская область',
+#             'Самарская область',
+#             'Chicago, IL'
+#         ]
+#         return render(request, 'about/regions_GET.html', {'regs': self.regions})
+#
+#     def post(self, request):
+#         self.message = 'Регион успешно создан'
+#         return render(request, 'about/regions_POST.html', {'mes': self.message})
