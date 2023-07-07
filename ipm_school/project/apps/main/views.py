@@ -5,7 +5,7 @@ def index(request):
     return render(request, "index.html", {})
 
 def registration_teacher(request):
-    return render(request, "registration_teacher.html", {})
+    return render(request, "authorization/registration_teacher.html", {})
 
 def registration_student(request):
     return render(request, "registration_student.html", {})
