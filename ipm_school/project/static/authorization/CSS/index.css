@@ -1,0 +1,65 @@
+@font-face {
+    font-family: 'Dela Gothic One';
+    src: URL('../../fonts/DelaGothicOne-Regular.ttf') format('truetype');
+  }
+  @font-face {
+    font-family: 'Montserrat';
+    src: URL('../../fonts/Montserrat-Regular.otf') format('truetype');
+  }
+.btn-logo-style  {
+    font-family: "Dela Gothic One";
+    font-weight: bold;
+    font-size: 40px;
+    color: rgb(0, 0, 0);
+
+}
+.btn-hmenu {
+    font-family: "Montserrat";
+    font-weight: 300;
+    font-size: 5px;
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+    Line height: 15px;
+}
+.modal-dialog {
+    width: 400px;
+    height: 660px;
+    margin: 100px auto 400px;
+}
+.form-floating {
+    font-family:Montserrat ;
+    font-size: 16px;
+    width: 245px;
+    color: #C3DCE3;
+    margin: 0 auto;
+    radius: 100;
+}
+.text-body-secondary {
+    font-size: 10px;
+}
+.btn {
+    font-family:Montserrat ;
+    font-size: 16px;
+    font-weight: 600;
+    color: #2B788B;
+    border-color: #C3DCE3;
+    background-color: #C3DCE3;
+    border-radius: 100px;
+    cursor: pointer;
+}
+.btn:hover {
+    border-color: #afdfed;
+    background-color: #afdfed;
+    color: #000
+}
+.miy {
+    font-family:Montserrat ;
+    font-size: 16px;
+    font-weight: 600;
+    color: #2B788B;
+    margin-left: 150px;
+    padding: 0px 10px;
+    background-color: Transparent;
+    background-repeat:no-repeat;
+    border: none;
+}
