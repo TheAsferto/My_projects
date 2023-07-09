@@ -20,7 +20,7 @@ def page_teacher_lk(request):
     return render(request, "page_teacher_lk.html", {})
 
 def page_student_class(request):
-    return render(request, "page_student_class.html", {})
+    return render(request, "student/page_student_class.html", {})
 
 def page_teacher_class(request):
     return render(request, "page_teacher_class.html", {})

@@ -26,7 +26,6 @@ header {
     padding-bottom: 10px; 
 }
 
-
 .btn-logo-style  {
     font-family: "Dela Gothic One";
     font-weight: regular;
@@ -134,7 +133,14 @@ header {
     border: 3px solid rgb(146, 177, 185); 
 } 
 
-
+.footer-fixed-bottom {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+    margin-bottom: 20px;
+}
 
 
 
