@@ -8,10 +8,10 @@ def registration_teacher(request):
     return render(request, "authorization/registration_teacher.html", {})
 
 def registration_student(request):
-    return render(request, "registration_student.html", {})
+    return render(request, "authorization/registration_student.html", {})
 
 def authorization(request):
-    return render(request, "authorization.html", {})
+    return render(request, "authorization/authorization.html", {})
 
 def page_student_lk(request):
     return render(request, "student/page_student_lk.html", {})
