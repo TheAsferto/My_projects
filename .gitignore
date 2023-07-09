@@ -69,3 +69,4 @@ venv/
 coverage.xml
 htmlcov/
 nosetests.xml
+/ipm_school/project/apps/main/migrations/
