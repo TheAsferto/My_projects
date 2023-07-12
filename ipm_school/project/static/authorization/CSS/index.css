@@ -11,7 +11,6 @@
     font-weight: bold;
     font-size: 40px;
     color: rgb(0, 0, 0);
-
 }
 .btn-hmenu {
     font-family: "Montserrat";
@@ -21,18 +20,24 @@
     text-decoration: none;
     Line height: 15px;
 }
+.modal{
+    background: #F6F5F4;
+    height: 100vh;
+}
 .modal-dialog {
     width: 400px;
-    height: 660px;
-    margin: 100px auto 400px;
+    margin-top: 4%;
 }
-.form-floating {
-    font-family:Montserrat ;
-    font-size: 16px;
+label {
+    font-size: 14px;
+}
+.form-floating{
+    font-family:Montserrat;
+    font-style: normal;
+    font-size: 18px;
     width: 245px;
-    color: #C3DCE3;
     margin: 0 auto;
-    radius: 100;
+    font-weight: 600;
 }
 .text-body-secondary {
     font-size: 10px;
@@ -52,8 +57,9 @@
     background-color: #afdfed;
     color: #2B788B
 }
+
 .miy {
-    font-family:Montserrat ;
+    font-family:Montserrat;
     font-size: 16px;
     font-weight: 600;
     color: #2B788B;
