@@ -27,11 +27,12 @@
             <h3 align="center" class=".btn-hmenu"
                 style="font-family:Montserrat; font-weight: 400;font-size: 15px; color: rgb(0, 0, 0)">Преподавателя</h3>
             <div class="modal-body p-5 pt-0">
-                <form class="">
+                <form method="POST" action="{% url 'registration_teacher' %}">
+                    {% csrf_token %}
                     <div class="form-floating mb-3">
-                        <input type="name" class="form-control rounded-5" id="floatingInput"
+                        <input type="text" class="form-control rounded-5" id="floatingInputName" name="name"
                                placeholder="name@example.com">
-                        <label for="floatingInput">
+                        <label for="floatingInputName">
                             <ya-tr-span data-index="16-0" data-translated="true" data-source-lang="en"
                                         data-target-lang="ru" data-value="name" data-translation="Имя"
                                         data-ch="0" data-type="trSpan">Имя
@@ -39,9 +40,9 @@
                         </label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="surename" class="form-control rounded-5" id="floatingInput"
+                        <input type="text" class="form-control rounded-5" id="floatingInputSurname" name="surname"
                                placeholder="name@example.com">
-                        <label for="floatingInput">
+                        <label for="floatingInputSurname">
                             <ya-tr-span data-index="16-0" data-translated="true" data-source-lang="en"
                                         data-target-lang="ru" data-value="surname" data-translation="Фамилия"
                                         data-ch="0" data-type="trSpan">Фамилия
@@ -49,9 +50,9 @@
                         </label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="Universisty" class="form-control rounded-5" id="floatingInput"
+                        <input type="text" class="form-control rounded-5" id="floatingInputUniversity" name="university"
                                placeholder="name@example.com">
-                        <label for="floatingInput">
+                        <label for="floatingInputUniversity">
                             <ya-tr-span data-index="16-0" data-translated="true" data-source-lang="en"
                                         data-target-lang="ru" data-value="Universisty" data-translation="ВУЗ"
                                         data-ch="0" data-type="trSpan">ВУЗ
@@ -59,9 +60,9 @@
                         </label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="Faculty" class="form-control rounded-5" id="floatingInput"
+                        <input type="text" class="form-control rounded-5" id="floatingInputFaculty" name="faculty"
                                placeholder="name@example.com">
-                        <label for="floatingInput">
+                        <label for="floatingInputFaculty">
                             <ya-tr-span data-index="16-0" data-translated="true" data-source-lang="en"
                                         data-target-lang="ru" data-value="Faculty" data-translation="Факультет"
                                         data-ch="0" data-type="trSpan">Факультет
@@ -69,9 +70,9 @@
                         </label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="Subject" class="form-control rounded-5" id="floatingInput"
+                        <input type="text" class="form-control rounded-5" id="floatingInputSubject" name="subject"
                                placeholder="name@example.com">
-                        <label for="floatingInput">
+                        <label for="floatingInputSubject">
                             <ya-tr-span data-index="16-0" data-translated="true" data-source-lang="en"
                                         data-target-lang="ru" data-value="Subject" data-translation="Предмет"
                                         data-ch="0" data-type="trSpan">Предмет
@@ -79,9 +80,9 @@
                         </label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="email" class="form-control rounded-5" id="floatingInput"
+                        <input type="email" class="form-control rounded-5" id="floatingInputEmail" name="email"
                                placeholder="name@example.com">
-                        <label for="floatingInput">
+                        <label for="floatingInputEmail">
                             <ya-tr-span data-index="16-0" data-translated="true" data-source-lang="en"
                                         data-target-lang="ru" data-value="Email address" data-translation="Эл. адрес"
                                         data-ch="0" data-type="trSpan">Эл. адрес
@@ -89,14 +90,14 @@
                         </label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="password" class="form-control rounded-5" id="floatingPassword"
+                        <input type="password" class="form-control rounded-5" id="floatingPassword1" name="password1"
                                placeholder="Пароль">
-                        <label for="floatingPassword">Пароль</label>
+                        <label for="floatingPassword1">Пароль</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="password" class="form-control rounded-5" id="floatingPassword"
+                        <input type="password" class="form-control rounded-5" id="floatingPassword2" name="password2"
                                placeholder="Повторите пароль">
-                        <label for="floatingPassword">
+                        <label for="floatingPassword2">
                             <ya-tr-span data-index="16-0" data-translated="true" data-source-lang="en"
                                         data-target-lang="ru" data-value="Repeat password"
                                         data-translation="Повторите пароль" data-ch="0" data-type="trSpan">Повторите
@@ -105,9 +106,9 @@
                         </label>
                     </div>
                     <div class="d-flex justify-content-center">
-                    <button type="submit" class="btn">
-                        Создать аккаунт
-                    </button>
+                        <button type="submit" class="btn">
+                            Создать аккаунт
+                        </button>
                     </div>
                     <hr class="my-4">
                     <small class="text-body-secondary">
