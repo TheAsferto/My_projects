@@ -31,7 +31,10 @@ def registration_student(request):
 
 
 def authorization(request):
-    return render(request, "authorization.html", {})
+    return render(request, "authorization/authorization.html", {})
+
+def update_authorization(request):
+    return render(request, "authorization/update_authorization.html", {})
 
 
 def page_student_lk(request):
