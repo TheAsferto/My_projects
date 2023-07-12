@@ -57,6 +57,15 @@ label {
     background-color: #afdfed;
     color: #2B788B
 }
-.form control{
-    border: 3px;
+
+.miy {
+    font-family:Montserrat;
+    font-size: 16px;
+    font-weight: 600;
+    color: #2B788B;
+    margin-left: 150px;
+    padding: 0px 10px;
+    background-color: Transparent;
+    background-repeat:no-repeat;
+    border: none;
 }
