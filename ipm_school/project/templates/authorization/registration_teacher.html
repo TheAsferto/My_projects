@@ -70,14 +70,13 @@
                         </label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control rounded-5" id="floatingInputSubject" name="subject"
-                               placeholder="name@example.com">
-                        <label for="floatingInputSubject">
-                            <ya-tr-span data-index="16-0" data-translated="true" data-source-lang="en"
-                                        data-target-lang="ru" data-value="Subject" data-translation="Предмет"
-                                        data-ch="0" data-type="trSpan">Предмет
-                            </ya-tr-span>
-                        </label>
+                        <select name="subject" class="form-select rounded-5" id="floatingSelect" aria-label="Floating label select example">
+                            <option selected></option>
+                            <option value="Информатика">Информатика</option>
+                            <option value="Физика">Физика</option>
+                            <option value="Математика">Математика</option>
+                        </select>
+                        <label for="floatingSelect" class="select_label">Предмет обучения</label>
                     </div>
                     <div class="form-floating mb-3">
                         <input type="email" class="form-control rounded-5" id="floatingInputEmail" name="email"

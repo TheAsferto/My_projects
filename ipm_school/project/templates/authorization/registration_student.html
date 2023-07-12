@@ -49,14 +49,13 @@
                         </label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control rounded-5" id="floatingInputClass" name="class_number"
-                               placeholder="class number">
-                        <label for="floatingInputClass">
-                            <ya-tr-span data-index="16-0" data-translated="true" data-source-lang="en"
-                                        data-target-lang="ru" data-value="Faculty" data-translation="Class"
-                                        data-ch="0" data-type="trSpan">Класс
-                            </ya-tr-span>
-                        </label>
+                        <select name="class_number" class="form-select rounded-5" id="floatingSelect" aria-label="Floating label select example">
+                            <option selected></option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                        </select>
+                        <label for="floatingSelect" class="select_label">Предмет обучения</label>
                     </div>
                     <div class="form-floating mb-3">
                         <input type="email" class="form-control rounded-5" id="floatingInputMail" name="email"
