@@ -25,11 +25,13 @@
                 </ya-tr-span>
             </h1>
             <div class="modal-body p-5 pt-0">
-                <form class="">
+                <form method="POST" action="{% url 'authorization' %}">
+                    {% csrf_token %}
                     <div class="form-floating mb-3">
-                        <input type="email" class="form-control rounded-5" id="floatingInput"
-                               placeholder="name@example.com">
-                        <label for="floatingInput">
+<!--                        <input type="text" class="form-control rounded-5" id="id_username" name='email'-->
+<!--                               placeholder="name@example.com">-->
+                        {{ form.username }}
+                        <label for="floatingInputEmail">
                             <ya-tr-span data-index="16-0" data-translated="true" data-source-lang="en"
                                         data-target-lang="ru" data-value="Email address" data-translation="Эл. адрес"
                                         data-ch="0" data-type="trSpan">Эл. адрес
@@ -37,10 +39,11 @@
                         </label>
                     </div>
                     <div class="form-floating mb-3">
-                        <input type="password" class="form-control rounded-5" style="margin-bottom: 0px;"
-                               id="floatingPassword"
-                               placeholder="Пароль">
-                        <label for="floatingPassword">Пароль</label>
+<!--                        <input type="password" class="form-control rounded-5" style="margin-bottom: 0px;" name="password"-->
+<!--                               id="id_password"-->
+<!--                               placeholder="Пароль">-->
+                        {{ form.password }}
+                        <label for="id_password">Пароль</label>
                     </div>
                     <a type="button" href="/update_authorization/" class="miy btn-link" style="margin-bottom: 10px;">Забыли пароль</a>
                     <div class="d-flex justify-content-center">

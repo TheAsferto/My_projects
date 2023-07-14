@@ -113,4 +113,6 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'main.Student'
+AUTH_USER_MODEL = 'main.User'
+LOGIN_REDIRECT_URL = 'page_student_lk'
+LOGIN_URL = 'authorization'
