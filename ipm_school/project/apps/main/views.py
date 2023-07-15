@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView
-from .models import User
+from .models import User, Teacher
 from django.contrib.auth import views as auth_views
 from .forms import StudentSignUpForm, TeacherSignUpForm, LoginForm
 from django.urls import reverse
@@ -69,8 +69,11 @@ def page_student_lk(request):
 @login_required
 @teacher_required
 def page_teacher_lk(request):
-    context = {}
-    return render(request, 'index.html', context)
+    mail = request.user.email
+    teacher_name = Teacher.objects.get(user__email__contains=mail).name
+    teacher_surname = Teacher.objects.get(user__email__contains=mail).surname
+    context = {'email':mail, 'teacher_name':teacher_name, 'teacher_surname':teacher_surname}
+    return render(request, 'teacher/page_teacher_lk.html', context)
 
 
 def update_authorization(request):
@@ -83,6 +86,10 @@ def page_student_class(request):
 
 def page_teacher_class(request):
     return render(request, "page_teacher_class.html", {})
+
+def logout(request):
+    logout(request) 
+    return redirect('index')
 
 # def my_view(request):
 #     username = request.POST["username"]

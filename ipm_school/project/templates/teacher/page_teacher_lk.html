@@ -1,0 +1,120 @@
+<div class="d-flex flex-column min-vh-100">
+    {% include "index_header.html" %}
+
+    <body class="body_style visible-grid">
+    <div class="container visible-grid" style="margin-top: 20px">
+            <div class="row rounded-4" style="background-color: white">
+                <span class="text" style="font-size: 32px; font-family: Dela Gothic One, sans-serif">Личная информация преподавателя</span>
+            </div>
+        </div>
+
+        <div class="container text fw-bold" style="margin-top: 40px; font-family: Montserrat-Regular, sans-serif">
+            <div class="row rounded-4" style="background-color: white; padding: 20px">
+                <div class="col">
+                    <div class="row row-cols-auto text-centre visible-grid align-items-center">
+                        <div class="col visible-grid" style="padding: 20px">
+                            <img src="../../static/img/no_foto.png" class="rounded" alt="..." width="160" height="160">
+                        </div>
+                        <div class="col visible-grid" style="font-size: 16px;" >
+                            <div class="row row-cols-auto border-bottom visible-grid" style="padding-top: 10px">
+                                <div class="col">
+                                    <p>Фамилия:</p>
+                                </div>
+                                <div class="col">
+                                    <p>{{teacher_surname}}</p>
+                                </div>
+                            </div>
+                            <div class="row row-cols-auto border-bottom visible-grid" style="padding-top: 10px">
+                                <div class="col">
+                                    <p>Имя:</p>
+                                </div>
+                                <div class="col">
+                                    <p>{{teacher_name}}</p>
+                                </div>
+                            </div>
+                            <div class="row row-cols-auto border-bottom visible-grid" style="padding-top: 10px">
+                                <div class="col">
+                                    <p>Отчество:</p>
+                                </div>
+                                <div class="col">
+                                    <p>нет в БД</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row row-cols-auto text-centre fw-bold" style="font-size: 18px">
+                        <div class="col"><p class="text">Мой рейтинг:</p></div>
+                        <div class="col"><p style="color: #639B6D">-</p></div>
+                    </div>
+                    <div class="row row-cols-auto text-centre fw-bold" style="font-size: 18px">
+                        <div class="col"><p class="text">Почта:</p></div>
+                        <div class="col"><p style="color: #639B6D">{{ email }}</p></div>
+                    </div>
+                    <div class="row row-cols-auto text-centre fw-bold" style="font-size: 18px">
+                        <div class="col"><p class="text">Телефон:</p></div>
+                        <div class="col"><p style="color: #639B6D">нет в БД</p></div>
+                    </div>
+                    <div class="row row-cols-auto text-centre fw-bold" style="font-size: 18px">
+                        <div class="col"><p class="text">Класс:</p></div>
+                        <div class="col"><p style="color: #639B6D">нет в БД</p></div>
+                    </div>
+                    <div class="row row-cols-auto text-centre fw-bold" style="font-size: 18px">
+                        <div class="col"><p class="text">ID группы:</p></div>
+                        <div class="col"><p style="color: #BABABA">нет в БД</p></div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="row">Здесь будет верификация</div>
+                    <div class="row border-bottom" style="font-size: 16px; padding-top: 20px">Расписание группы</div>
+                    <div class="row" style="padding-top: 10px; padding-right: 250px; font-size: 14px">
+                        <table class="table table-bordered">
+
+                            <thead class="table-light">
+                            <tr>
+                                <th>День недели</th>
+                                <th>Предмет</th>
+                                <th>Время</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            <tr>
+                                <th>Пн</th>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>Вт</th>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>Ср</th>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>Чт</th>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>Пт</th>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>Сб</th>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    {% include "index_footer.html" %}
+</div>

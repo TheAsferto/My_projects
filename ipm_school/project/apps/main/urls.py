@@ -2,6 +2,7 @@ from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
 from .forms import LoginForm
+from django.conf import settings
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -16,4 +17,5 @@ urlpatterns = [
     path('page_teacher_lk/', views.page_teacher_lk, name='page_teacher_lk'),
     path('page_student_class/', views.page_student_class, name='page_student_class'),
     path('page_teacher_class/', views.page_teacher_class, name='page_teacher_class'),
+    path('logout/', auth_views.LogoutView.as_view(), {'next_page':settings.LOGOUT_REDIRECT_URL}, name='logout'),
 ]
