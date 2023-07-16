@@ -29,7 +29,23 @@ class CustomUserManager(BaseUserManager):
         return self._create_user(email, password, **extra_fields)
 
 
-# table Teacher
+class User(AbstractBaseUser, PermissionsMixin):
+    last_login = models.DateField(blank=True, null=True, default=datetime.date.today)
+
+    id = models.BigAutoField(primary_key=True)
+    email = models.EmailField(unique=True)
+    password = models.CharField(max_length=100)
+
+    is_student = models.BooleanField(default=False)
+    is_teacher = models.BooleanField(default=False)
+
+    is_superuser = models.BooleanField(default=False)
+
+    objects = CustomUserManager()
+
+    USERNAME_FIELD = "email"
+
+
 class Teacher(AbstractBaseUser):
     SUBJECT_NAME = [
         ("Информатика", "Информатика"),
@@ -38,8 +54,8 @@ class Teacher(AbstractBaseUser):
     ]
 
     last_login = models.DateField(blank=True, null=True, default=datetime.date.today)
-    teacher_id = models.BigAutoField(primary_key=True)
-    email = models.CharField(unique=True, max_length=100)
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name='teacher')
     password = models.CharField(max_length=100)
     name = models.CharField(max_length=50)
     surname = models.CharField(max_length=50)
@@ -47,13 +63,11 @@ class Teacher(AbstractBaseUser):
     faculty = models.CharField(max_length=50)
     subject = models.CharField(choices=SUBJECT_NAME)
 
+    is_superuser = models.BooleanField(default=False)
+
     objects = CustomUserManager()
 
-    USERNAME_FIELD = "email"
-    EMAIL_FIELD = "email"
 
-
-# table group
 class Group(models.Model):
     CLASS_NUM = [
         (9, 9),
@@ -64,13 +78,12 @@ class Group(models.Model):
     class_id = models.BigAutoField(primary_key=True)
     class_name = models.CharField(max_length=50)
     class_number = models.IntegerField(choices=CLASS_NUM)
-    teacher_inf_id = models.ForeignKey(Teacher, related_name="teacher_inf", null=True, on_delete=models.SET_NULL)
-    teacher_ph_id = models.ForeignKey(Teacher, related_name="teacher_ph", null=True, on_delete=models.SET_NULL)
-    teacher_math_id = models.ForeignKey(Teacher, related_name="teacher_math", null=True, on_delete=models.SET_NULL)
+    teacher_inf = models.ForeignKey(Teacher, related_name="teacher_inf", null=True, on_delete=models.SET_NULL)
+    teacher_ph = models.ForeignKey(Teacher, related_name="teacher_ph", null=True, on_delete=models.SET_NULL)
+    teacher_math = models.ForeignKey(Teacher, related_name="teacher_math", null=True, on_delete=models.SET_NULL)
 
 
-# table of student
-class Student(AbstractBaseUser, PermissionsMixin):
+class Student(AbstractBaseUser):
     CLASS_NUM = [
         (9, 9),
         (10, 10),
@@ -78,18 +91,14 @@ class Student(AbstractBaseUser, PermissionsMixin):
     ]
 
     last_login = models.DateField(blank=True, null=True, default=datetime.date.today)
-    is_staff = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=False)
-    student_id = models.BigAutoField(primary_key=True)
-    email = models.EmailField(unique=True, max_length=100)
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name='student')
     password = models.CharField(max_length=100)
     name = models.CharField(max_length=100)
     surname = models.CharField(max_length=100)
     class_number = models.IntegerField(choices=CLASS_NUM, null=True)
-    class_ID = models.ForeignKey(Group, null=True, on_delete=models.SET_NULL)
+    group = models.ForeignKey(Group, null=True, on_delete=models.SET_NULL)
+
+    is_superuser = models.BooleanField(default=False)
 
     objects = CustomUserManager()
-
-    USERNAME_FIELD = "email"
-    EMAIL_FIELD = "email"
-    REQUIRED_FIELDS = []

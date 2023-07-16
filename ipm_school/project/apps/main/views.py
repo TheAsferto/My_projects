@@ -1,45 +1,83 @@
 from django.contrib.auth import authenticate, login
-from django.shortcuts import render
-
-from .forms import StudentCreationForm, TeacherCreationForm
+from django.shortcuts import render, redirect
+from django.views.generic import CreateView
+from .models import User, Teacher
+from django.contrib.auth import views as auth_views
+from .forms import StudentSignUpForm, TeacherSignUpForm, LoginForm
+from django.urls import reverse
+from .decorators import student_required, teacher_required
+from django.contrib.auth.decorators import login_required
 
 
 def index(request):
     return render(request, "index.html", {})
 
 
-def registration_teacher(request):
-    if request.method == 'POST':
-        form = TeacherCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-    else:
-        form = TeacherCreationForm()
+class TeacherSignUpView(CreateView):
+    model = User
+    form_class = TeacherSignUpForm
+    template_name = 'authorization/registration_teacher.html'
 
-    return render(request, 'authorization/registration_teacher.html', {'form': form})
+    def get_context_data(self, **kwargs):
+        kwargs['user_type'] = 'teacher'
+        return super().get_context_data(**kwargs)
 
-
-def registration_student(request):
-    if request.method == 'POST':
-        form = StudentCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-    else:
-        form = StudentCreationForm()
-
-    return render(request, 'authorization/registration_student.html', {'form': form})
+    def form_valid(self, form):
+        user = form.save()
+        return redirect('authorization')
 
 
-def authorization(request):
-    return render(request, "authorization.html", {})
+class StudentSignUpView(CreateView):
+    model = User
+    form_class = StudentSignUpForm
+    template_name = 'authorization/registration_student.html'
+
+    def get_context_data(self, **kwargs):
+        kwargs['user_type'] = 'student'
+        return super().get_context_data(**kwargs)
+
+    def form_valid(self, form):
+        user = form.save()
+        return redirect('authorization')
 
 
+class LoginView(auth_views.LoginView):
+    template_name = 'authorization/authorization.html'
+    form_class = LoginForm
+
+    def get_context_data(self, **kwargs):
+        return super().get_context_data(**kwargs)
+
+    def get_success_url(self):
+        user = self.request.user
+        if user.is_authenticated:
+            if user.is_student:
+                return reverse('page_student_lk')
+            if user.is_teacher:
+                return reverse('page_teacher_lk')
+        else:
+            return reverse('authorization')
+
+
+@login_required
+@student_required
 def page_student_lk(request):
-    return render(request, "student/page_student_lk.html", {})
+    context = {}
+    return render(request, 'student/page_student_lk.html', context)
 
 
+@login_required
+@teacher_required
 def page_teacher_lk(request):
-    return render(request, "page_teacher_lk.html", {})
+    mail = request.user.email
+    teacher_name = Teacher.objects.get(user__email__contains=mail).name
+    teacher_surname = Teacher.objects.get(user__email__contains=mail).surname
+    context = {'email':mail, 'teacher_name':teacher_name, 'teacher_surname':teacher_surname}
+    return render(request, 'teacher/page_teacher_lk.html', context)
+
+
+def update_authorization(request):
+    return render(request, "authorization/update_authorization.html", {})
 
 
 def page_student_class(request):
@@ -49,30 +87,18 @@ def page_student_class(request):
 def page_teacher_class(request):
     return render(request, "page_teacher_class.html", {})
 
+def logout(request):
+    logout(request) 
+    return redirect('index')
 
-# example
-# class Regions(View):
-#     def get(self, request):
-#         self.regions = [
-#             'Москва',
-#             'Московская область',
-#             'Самарская область',
-#             'Chicago, IL'
-#         ]
-#         return render(request, 'about/regions_GET.html', {'regs': self.regions})
-#
-#     def post(self, request):
-#         self.message = 'Регион успешно создан'
-#         return render(request, 'about/regions_POST.html', {'mes': self.message})
-
-def my_view(request):
-    username = request.POST["username"]
-    password = request.POST["password"]
-    user = authenticate(request, username=username, password=password)
-    if user is not None:
-        login(request, user)
-        # Redirect to a success page.
-        ...
-    else:
-        # Return an 'invalid login' error message.
-        ...
+# def my_view(request):
+#     username = request.POST["username"]
+#     password = request.POST["password"]
+#     user = authenticate(request, username=username, password=password)
+#     if user is not None:
+#         login(request, user)
+#         # Redirect to a success page.
+#         ...
+#     else:
+#         # Return an 'invalid login' error message.
+#         ...

@@ -10,7 +10,7 @@ env = environ.Env()
 env.read_env(os.path.join(BASE_DIR, '.env'))
 
 SECRET_KEY = NotImplemented
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -113,4 +113,7 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'main.Student'
+AUTH_USER_MODEL = 'main.User'
+LOGIN_REDIRECT_URL = 'page_student_lk'
+LOGIN_URL = 'authorization'
+LOGOUT_REDIRECT_URL = 'index'
