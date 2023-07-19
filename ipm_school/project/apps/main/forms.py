@@ -4,7 +4,7 @@ from . import models
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.db import transaction
-
+import re 
 User = get_user_model()
 
 
@@ -102,3 +102,56 @@ class LoginForm(AuthenticationForm):
     password = forms.CharField(widget=forms.PasswordInput(
         attrs={'class': 'form-control rounded-5',
                'style': 'margin-bottom: 0px;'}))
+
+
+class Fathername_changing_form(forms.Form):
+    fathername = forms.CharField(label='fathername')
+    def clean_fathername(self):
+        data = self.cleaned_data['fathername']
+        if bool(re.search('[A-zA-Z]', data)):
+            print("В отчестве использована латиница")
+            raise ValidationError("В отчестве использована латиница")
+        return data
+    
+class Name_changing_form(forms.Form):
+    name = forms.CharField(label='name')
+    def clean_name(self):
+        data = self.cleaned_data['name']
+        if bool(re.search('[A-zA-Z]', data)):
+            print("В имени использована латиница")
+            raise ValidationError("В имени использована латиница")
+        return data
+
+class Surn_changing_form(forms.Form):
+    surname = forms.CharField(label='surname')
+    def clean_surname(self):
+        data = self.cleaned_data['surname']
+        if bool(re.search('[A-zA-Z]', data)):
+            print("В фамилии использована латиница")
+            raise ValidationError("В фамилии использована латиница")
+        return data
+    
+def check_phone(string):
+        pattern1 = re.compile('^[78]?[\s]?[\-\s\(]?\d{3}[\-\s\)]?[\s]?\d{3}\-?\d{2}\-?\d{2}$')
+        pattern2 = re.compile('^\+(?=7)7[\s]?[\-\s\(]?\d{3}[\-\s\)]?[\s]?\d{3}\-?\d{2}\-?\d{2}$')
+        if pattern1.findall(string) or pattern2.findall(string):
+            return True
+        else:
+            return False
+class Tel_changing_form(forms.Form):
+    phone = forms.CharField(label='phone')
+    def clean_phone(self):
+        data = self.cleaned_data['phone']
+        if not check_phone(data):
+            print("Номер не прошел проверку")
+            raise ValidationError("Номер не прошел проверку")
+        return data
+    
+class Class_changing_form(forms.Form):
+    tclass = forms.CharField(label='tclass')
+    def clean_tclass(self):
+        data = self.cleaned_data['tclass']
+        if data in (9, 10, 11):
+            print("Класс не прошел проверку")
+            raise ValidationError("Класс не прошел проверку")
+        return data

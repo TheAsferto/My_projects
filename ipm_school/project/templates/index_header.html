@@ -40,13 +40,14 @@
             <div class="col visible-grid">
             </div>
                 {% if request.user.is_authenticated %}
-                  <div class="col-auto text-end visible-grid px-0">
-                    <img src="../../static/img/no_foto.png" width="40px" height="40px">
-                  </div>
                   <div class="col-auto text-start visible-grid " style="padding-left: 0px; border-right: 3px solid #393939;">
-                    <div class="btn-hmenu">Иван</div>
+                    <a href="/page_teacher_lk/" class="btn-hmenu">
+                      {% load static %}
+                      <img src="{% static ava_path %}" alt="Test_ava" class="rounded-circle"  width="40px" height="40px">
+                      <span>{{name}}</span>
+                    </a>
                   </div>
-                  <div class="col-auto visible-grid">
+                  <div class="col-auto visible-grid" >
                     <a href="/logout/" class="btn-login">Выйти <img src="../static/img/logout.png"></a>
                   </div>
                 {% else %}

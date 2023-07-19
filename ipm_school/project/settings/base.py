@@ -117,3 +117,5 @@ AUTH_USER_MODEL = 'main.User'
 LOGIN_REDIRECT_URL = 'page_student_lk'
 LOGIN_URL = 'authorization'
 LOGOUT_REDIRECT_URL = 'index'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'ipm_school/project/static/')
+MEDIA_URL = 'ipm_school/project/static/'
