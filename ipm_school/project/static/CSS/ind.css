@@ -8,8 +8,7 @@
     font-family: 'Montserrat';
     src: URL('../fonts/Montserrat-Regular.otf') format('truetype');
   }
-
-body{
+.body_style{
     background-color: #ffffff;
     -webkit-font-smoothing: antialiased;
     -webkit-overflow-scrolling: touch;
@@ -25,8 +24,6 @@ header {
     padding-top: 10px; 
     padding-bottom: 10px; 
 }
-
-
 .btn-logo-style  {
     font-family: "Dela Gothic One";
     font-weight: regular;
@@ -61,7 +58,6 @@ header {
 .btn-hmenu:active {
     color: rgb(124, 124, 124); 
 }
-
 .btn-login {
     font-family: "Montserrat";
     font-weight: bold;
@@ -75,7 +71,6 @@ header {
 .btn-login:active {
     color: rgb(124, 124, 124); 
 }
-
 .btn-reg {
     background-color: rgb(49,120,139);
     border: 3px solid  rgb(49,120,139); 
@@ -94,7 +89,6 @@ header {
     background-color: rgb(31, 76, 88);
     border: 3px solid rgb(31, 76, 88); 
 }
-
 .colored-text {
     font-family: "Montserrat";
     font-weight: bold;
@@ -133,16 +127,25 @@ header {
     background-color: rgb(146, 177, 185); 
     border: 3px solid rgb(146, 177, 185); 
 } 
-
-.footer-fixed-bottom {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 10;
-    margin-bottom: 20px;
+#avatar {
+    opacity: 0;
+    width: 0.1px;
+    height: 0.1px;
+}
+lable[for="avatar"] {
+    display: block;
+    background-color: aquamarine;
+    color: red;
 }
 
+/*
+.avatar_picker{
+    display: flex;
+    width: 200px;
+    height: 50px;
+    border-radius: 25px;
+    background: linear-gradient(40deg, #ff6ec4, #7873f5);  
+} 
 
 
 /*
@@ -150,5 +153,4 @@ header {
     background-color: rgba(204, 0, 255, 0.089);
     border: 1px solid rgb(110, 47, 139);
     box-sizing: border-box;
-    
 }

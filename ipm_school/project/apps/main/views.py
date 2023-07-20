@@ -7,10 +7,25 @@ from .forms import StudentSignUpForm, TeacherSignUpForm, LoginForm
 from django.urls import reverse
 from .decorators import student_required, teacher_required
 from django.contrib.auth.decorators import login_required
-
+from django.shortcuts import get_object_or_404
+from . import forms as myforms
+#from django.core.files.storage import default_storage
+from django.core.files import File
+from os.path import basename
+import urllib
 
 def index(request):
-    return render(request, "index.html", {})
+    if request.user.is_authenticated:
+        mail = request.user.email
+        teacher_name = Teacher.objects.get(user__email__contains=mail).name
+        if request.user.teacher.avatar == '-':
+            ava_path = 'avatars/no_ava.png'
+        else:
+            ava_path = request.user.teacher.avatar
+        context = {'name':teacher_name, 'ava_path':ava_path}
+    else:
+        context = {}
+    return render(request, "index.html", context)
 
 
 class TeacherSignUpView(CreateView):
@@ -69,10 +84,51 @@ def page_student_lk(request):
 @login_required
 @teacher_required
 def page_teacher_lk(request):
-    mail = request.user.email
-    teacher_name = Teacher.objects.get(user__email__contains=mail).name
-    teacher_surname = Teacher.objects.get(user__email__contains=mail).surname
-    context = {'email':mail, 'teacher_name':teacher_name, 'teacher_surname':teacher_surname}
+    if request.user.teacher.avatar == '-':
+        ava_path = 'avatars/no_ava.png'
+    else:
+         ava_path = request.user.teacher.avatar
+    if request.method == 'POST':
+        if 'fathername_frm' in request.POST:
+            form = myforms.Fathername_changing_form(request.POST)
+            if form.is_valid():
+                request.user.teacher.fathername = form.cleaned_data['fathername']
+                request.user.teacher.save()
+        if 'name_frm' in request.POST:
+            form = myforms.Name_changing_form(request.POST)
+            if form.is_valid():
+                request.user.teacher.name = form.cleaned_data['name']
+                request.user.teacher.save()
+        if 'surn_frm' in request.POST:
+            form = myforms.Surn_changing_form(request.POST)
+            if form.is_valid():
+                request.user.teacher.surname = form.cleaned_data['surname']
+                request.user.teacher.save()
+        if 'tel_frm' in request.POST:
+            form = myforms.Tel_changing_form(request.POST)
+            if form.is_valid():
+                request.user.teacher.phone_number = form.cleaned_data['phone']
+                request.user.teacher.save()
+        if 'class_frm' in request.POST:
+            form = myforms.Class_changing_form(request.POST)
+            if form.is_valid():
+                request.user.teacher.teacher_class_num = form.cleaned_data['tclass']
+                request.user.teacher.save()
+        if 'avatar' in request.FILES:
+            file = request.FILES['avatar']
+            ava_model = request.user.teacher
+            ava_model.avatar.delete()
+            ava_model.avatar = request.FILES['avatar']
+            ava_model.save()
+            ava_path = request.user.teacher.avatar
+
+    context = { 'email':request.user.email,
+                'name':request.user.teacher.name,
+                'surname':request.user.teacher.surname, 
+                'fathername':request.user.teacher.fathername,
+                'phone': request.user.teacher.phone_number,
+                'tclass': request.user.teacher.teacher_class_num, 
+                'ava_path': ava_path,}
     return render(request, 'teacher/page_teacher_lk.html', context)
 
 

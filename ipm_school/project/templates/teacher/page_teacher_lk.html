@@ -2,18 +2,24 @@
     {% include "index_header.html" %}
 
     <body class="body_style visible-grid">
-    <div class="container visible-grid" style="margin-top: 20px">
-            <div class="row rounded-4" style="background-color: white">
-                <span class="text" style="font-size: 32px; font-family: Dela Gothic One, sans-serif">Личная информация преподавателя</span>
-            </div>
+        <div class="container visible-grid" style="margin-top: 20px">
+                <div class="row rounded-4" style="background-color: white">
+                    <span class="text" style="font-size: 32px; font-family: Dela Gothic One, sans-serif">Личная информация преподавателя</span>
+                </div>
         </div>
 
         <div class="container text fw-bold" style="margin-top: 40px; font-family: Montserrat-Regular, sans-serif">
             <div class="row rounded-4" style="background-color: white; padding: 20px">
-                <div class="col">
+                <div class="col-6">
                     <div class="row row-cols-auto text-centre visible-grid align-items-center">
-                        <div class="col visible-grid" style="padding: 20px">
-                            <img src="../../static/img/no_foto.png" class="rounded" alt="..." width="160" height="160">
+                        <div class="col visible-grid" style="padding: 20px; position: relative;">   
+                            {% load static %}
+                            <img src="{% static ava_path %}" class="rounded-circle"  width="160" height="160">
+                            <form method="POST" action="{% url 'page_teacher_lk' %}" enctype="multipart/form-data" id="ac">
+                                {% csrf_token %}
+                                <label for="avatar" style="position: absolute; top: 150px; left: 150px;"><img src="../static/img/ava_change.png"></label>   
+                                <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg" onchange="ac.submit()">
+                            </form>
                         </div>
                         <div class="col visible-grid" style="font-size: 16px;" >
                             <div class="row row-cols-auto border-bottom visible-grid" style="padding-top: 10px">
@@ -21,7 +27,13 @@
                                     <p>Фамилия:</p>
                                 </div>
                                 <div class="col">
-                                    <p>{{teacher_surname}}</p>
+                                    <form method="POST" action="{% url 'page_teacher_lk' %}">
+                                    {% csrf_token %}
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" placeholder={{surname}} style="width: 200px;" name="surname">
+                                        <button class="btn btn-outline-secondary" type="submit" id="button-addon2" name="surn_frm"><img src="../static/img/refresh.png"></button>
+                                    </div>  
+                                    </form>
                                 </div>
                             </div>
                             <div class="row row-cols-auto border-bottom visible-grid" style="padding-top: 10px">
@@ -29,7 +41,13 @@
                                     <p>Имя:</p>
                                 </div>
                                 <div class="col">
-                                    <p>{{teacher_name}}</p>
+                                    <form method="POST" action="{% url 'page_teacher_lk' %}">
+                                    {% csrf_token %}
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" placeholder={{name}} style="width: 200px;" name="name">
+                                        <button class="btn btn-outline-secondary" type="submit" id="button-addon2" name="name_frm"><img src="../static/img/refresh.png"></button>
+                                    </div>  
+                                    </form>
                                 </div>
                             </div>
                             <div class="row row-cols-auto border-bottom visible-grid" style="padding-top: 10px">
@@ -37,26 +55,58 @@
                                     <p>Отчество:</p>
                                 </div>
                                 <div class="col">
-                                    <p>нет в БД</p>
+                                    <form method="POST" action="{% url 'page_teacher_lk' %}">
+                                    {% csrf_token %}
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" placeholder={{fathername}} style="width: 200px;" name="fathername">
+                                        <button class="btn btn-outline-secondary" type="submit" id="button-addon2" name="fathername_frm"><img src="../static/img/refresh.png"></button>
+                                    </div>
+                                    </form>  
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row row-cols-auto text-centre fw-bold" style="font-size: 18px">
+                    <div class="row row-cols-auto text-centre fw-bold" style="font-size: 18px; padding-top: 15px;">
                         <div class="col"><p class="text">Мой рейтинг:</p></div>
                         <div class="col"><p style="color: #639B6D">-</p></div>
                     </div>
                     <div class="row row-cols-auto text-centre fw-bold" style="font-size: 18px">
                         <div class="col"><p class="text">Почта:</p></div>
-                        <div class="col"><p style="color: #639B6D">{{ email }}</p></div>
+                        <div class="col">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" placeholder={{email}} aria-describedby="button-addon2" style="width: 200px;">
+                                <button class="btn btn-outline-secondary" type="button" id="button-addon2"><img src="../static/img/refresh.png"></button>
+                            </div> 
+                        </div>
                     </div>
                     <div class="row row-cols-auto text-centre fw-bold" style="font-size: 18px">
                         <div class="col"><p class="text">Телефон:</p></div>
-                        <div class="col"><p style="color: #639B6D">нет в БД</p></div>
+                        <div class="col">
+                            <form method="POST" action="{% url 'page_teacher_lk' %}">
+                            {% csrf_token %}
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" placeholder={{phone}} style="width: 200px;" name="phone">
+                                <button class="btn btn-outline-secondary" type="submit" id="button-addon2" name="tel_frm"><img src="../static/img/refresh.png"></button>
+                            </div>  
+                            </form>
+                        </div>
                     </div>
                     <div class="row row-cols-auto text-centre fw-bold" style="font-size: 18px">
                         <div class="col"><p class="text">Класс:</p></div>
-                        <div class="col"><p style="color: #639B6D">нет в БД</p></div>
+                        <div class="col">
+                            <form method="POST" action="{% url 'page_teacher_lk' %}">
+                            {% csrf_token %}
+                            <div class="input-group">
+                                <select class="form-select" id="inputGroupSelect04" style="width: 100px;" name="tclass">
+                                  <option selected>{{tclass}}</option>
+                                  <option value="9">9</option>
+                                  <option value="10">10</option>
+                                  <option value="11">11</option>
+                                </select>
+                                <button class="btn btn-outline-secondary" type="submit" name="class_frm"><img src="../static/img/refresh.png"></button>
+                            </div>  
+                            </form>
+                        </div>
                     </div>
                     <div class="row row-cols-auto text-centre fw-bold" style="font-size: 18px">
                         <div class="col"><p class="text">ID группы:</p></div>

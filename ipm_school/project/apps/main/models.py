@@ -47,6 +47,11 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class Teacher(AbstractBaseUser):
+    CLASS_NUM = [
+        (9, 9),
+        (10, 10),
+        (11, 11),
+    ]
     SUBJECT_NAME = [
         ("Информатика", "Информатика"),
         ("Физика", "Физика"),
@@ -62,8 +67,11 @@ class Teacher(AbstractBaseUser):
     university = models.CharField(max_length=50)
     faculty = models.CharField(max_length=50)
     subject = models.CharField(choices=SUBJECT_NAME)
-
     is_superuser = models.BooleanField(default=False)
+    fathername = models.CharField(max_length=50, default='-')
+    phone_number = models.CharField(max_length=20, default='-')
+    avatar = models.ImageField(upload_to="avatars/", default='-')
+    teacher_class_num = models.IntegerField(choices=CLASS_NUM, null=True)
 
     objects = CustomUserManager()
 
