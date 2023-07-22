@@ -16,6 +16,7 @@ urlpatterns = [
     path('update_authorization/', views.update_authorization, name='update_authorization'),
     path('page_student_lk/', views.page_student_lk, name='page_student_lk'),
     path('page_teacher_lk/', views.page_teacher_lk, name='page_teacher_lk'),
+    path('page_teach_settings/', views.page_teach_settings, name='page_teach_settings'),
     path('page_student_class/', views.page_student_class, name='page_student_class'),
     path('page_teacher_class/', views.page_teacher_class, name='page_teacher_class'),
     path('logout/', auth_views.LogoutView.as_view(), {'next_page':settings.LOGOUT_REDIRECT_URL}, name='logout'),
