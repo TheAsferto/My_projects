@@ -25,27 +25,44 @@
             {% endif %}
             <div class="col-auto hmenu-gstyle visible-grid">
               {% if request.user.is_authenticated %}
-                <a href="/page_teacher_lk/" class="btn-hmenu">Личный кабинет</a>
+                {% if request.user.is_teacher %}
+                  <a href="/page_teacher_lk/" class="btn-hmenu">Личный кабинет</a>
+                {% else %}
+                  <a href="/page_student_lk/" class="btn-hmenu">Личный кабинет</a>
+                {% endif %}
               {% else %}
                 <a href="/page_student_lk/" class="btn-hmenu">Для учеников</a>
               {% endif %}
             </div>
             <div class="col-auto hmenu-gstyle visible-grid">
               {% if request.user.is_authenticated %}
+                {% if request.user.is_teacher %}
                 <a href="#" class="btn-hmenu">Учебный класс</a>
+                {% else %}
+                <a href="#" class="btn-hmenu">Учебный класс</a>
+                {% endif %}
               {% else %}
-                <a href="/page_teacher_lk/" class="btn-hmenu">Для учителей</a>
+                  <a href="/page_teacher_lk/" class="btn-hmenu">Для учителей</a>
               {% endif %}
             </div>
             <div class="col visible-grid">
             </div>
                 {% if request.user.is_authenticated %}
                   <div class="col-auto text-start visible-grid " style="padding-left: 0px; border-right: 3px solid #393939;">
-                    <a href="/page_teacher_lk/" class="btn-hmenu">
-                      {% load static %}
-                      <img src="{% static ava_path %}" alt="Test_ava" class="rounded-circle"  width="40px" height="40px">
-                      <span>{{name}}</span>
-                    </a>
+                  {% if request.user.is_teacher %}
+                      <a href="/page_teacher_lk/" class="btn-hmenu">
+                        {% load static %}
+                        <img src="{% static ava_path %}" alt="Test_ava" class="rounded-circle"  width="40px" height="40px">
+                        <span>{{name}}</span>
+                      </a>
+                  {% else %}
+                      <a href="/page_student_lk/" class="btn-hmenu">
+                        {% load static %}
+                        <img src="{% static ava_path %}" alt="Test_ava" class="rounded-circle"  width="40px" height="40px">
+                        <span>{{name}}</span>
+                      </a>
+                  {% endif %}
+
                   </div>
                   <div class="col-auto visible-grid" >
                     <a href="/logout/" class="btn-login">Выйти <img src="../static/img/logout.png"></a>

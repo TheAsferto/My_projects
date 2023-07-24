@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView
-from .models import User, Teacher
+from .models import User, Teacher, Group, Student
 from django.contrib.auth import views as auth_views
 from .forms import StudentSignUpForm, TeacherSignUpForm, LoginForm
 from django.urls import reverse
@@ -9,20 +9,29 @@ from .decorators import student_required, teacher_required
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 from . import forms as myforms
-#from django.core.files.storage import default_storage
-from django.core.files import File
-from os.path import basename
-import urllib
+
+
+
 
 def index(request):
     if request.user.is_authenticated:
         mail = request.user.email
-        teacher_name = Teacher.objects.get(user__email__contains=mail).name
-        if request.user.teacher.avatar == '-':
+        if request.user.is_teacher:
+            teacher_name = Teacher.objects.get(user__email__contains=mail).name
+            if request.user.teacher.avatar == '-':
+                ava_path = 'avatars/no_ava.png'
+            else:
+                ava_path = request.user.teacher.avatar
+            context = {'name':teacher_name, 'ava_path':ava_path}
+        if request.user.is_student:
+            student_name = Student.objects.get(user__email__contains=mail).name
+#           if request.user.student.avatar == '-':
             ava_path = 'avatars/no_ava.png'
-        else:
-            ava_path = request.user.teacher.avatar
-        context = {'name':teacher_name, 'ava_path':ava_path}
+#           else:
+#           ava_path = request.user.teacher.avatar
+            context = {'name':student_name, 'ava_path':ava_path}
+            print('студент ', student_name)
+            context = {'name':student_name, 'ava_path':ava_path}
     else:
         context = {}
     return render(request, "index.html", context)
@@ -77,17 +86,127 @@ class LoginView(auth_views.LoginView):
 @login_required
 @student_required
 def page_student_lk(request):
-    context = {}
+    mail = request.user.email
+    student_name = Student.objects.get(user__email__contains=mail).name
+#           if request.user.student.avatar == '-':
+    ava_path = 'avatars/no_ava.png'
+#           else:
+#           ava_path = request.user.teacher.avatar
+    context = {'name':student_name, 'ava_path':ava_path}
+    print('студент ', student_name)
+    context = {'name':student_name, 'ava_path':ava_path}
+
     return render(request, 'student/page_student_lk.html', context)
 
+#функция записи в группу
+def teach_join_group(request, my_cl):
+    global gr_id
+    #нужно для вывода class_id и записи в группу
+    subj = request.user.teacher.subject
+    if subj == 'Информатика':
+        kwarg = {  '{}'.format('teacher_inf_id'): None}
+        field = 'teacher_inf'
+        kwarg1 = {  '{}'.format('teacher_inf_id'): request.user.id}
+    elif subj == 'Физика':
+        kwarg = {  '{}'.format('teacher_ph_id'): None}
+        field = 'teacher_ph'
+        kwarg1 = {  '{}'.format('teacher_ph_id'): request.user.id}
+    elif subj == 'Математика':
+        kwarg = {  '{}'.format('teacher_math_id'): None}
+        field = 'teacher_math'
+        kwarg1 = {  '{}'.format('teacher_math_id'): request.user.id}
+    #количество групп в которых состоит препод
+    my_gr = Group.objects.filter(**kwarg1)
+    #ловим запрос на поиск
+    if request.method == 'POST':
+        if 't_gr_search' in request.POST:
+            print("Принят запрос на поиск группы")
+            if my_gr.count() == 0 and my_cl: #допускаем к записи только тех, кто еще не записан
+                groups = Group.objects.filter(**kwarg, class_number=request.user.teacher.teacher_class_num)    
+                print("Найдено групп:" ,groups.count())
+                if groups.count()>0:
+                    for row in groups:
+                        kwarg2 = {'class_id': row.class_id}
+                        k = 0
+                        if row.teacher_inf_id != None:
+                            k += 1
+                        if row.teacher_ph_id != None:
+                            k += 1
+                        if row.teacher_math_id != None:
+                            k += 1    
+                        if k == 2:
+                            print(f'Обнаружена группа (id: {row.class_id}) с двумя преподами - начинаю запись') 
+                            g = Group(**kwarg1, **kwarg2,)
+                            g.save(update_fields=[field])
+                            break
+                        elif k == 1:
+                            print('Обнаружена группа с одним преподом - начинаю запись')
+                            g = Group(**kwarg1, **kwarg2,)
+                            g.save(update_fields=[field])
+                            break      
+                else:
+                    print('Групп без преподавателя не найдено - создаю новою группу') 
+                    g = Group(**kwarg1, class_number=request.user.teacher.teacher_class_num)
+                    g.save()
+            elif my_gr == 1:
+                print(f'Вы уже состоите в группе (id: {Group.objects.get(**kwarg1).class_number})')
+                #изменение выбранного класса для преподования на класс вашей группы
+                if request.user.teacher.teacher_class_num != Group.objects.get(**kwarg1).class_number:
+                    request.user.teacher.teacher_class_num = Group.objects.get(**kwarg1).class_number
+                    request.user.teacher.save(update_fields=['teacher_class_num'])
+        if 'ex_gr' in request.POST:
+            print("Принят запрос на выход из группы")
+            if my_gr.count() > 0:
+                row = Group.objects.get(**kwarg1)
+                k = 0
+                if row.teacher_inf_id != None:
+                    k += 1
+                if row.teacher_ph_id != None:
+                    k += 1
+                if row.teacher_math_id != None:
+                    k += 1    
+                if k == 1:
+                    g = Group.objects.get(**kwarg1).delete()
+                else:
+                    kwarg2 = {'class_id': row.class_id}
+                    g = Group(**kwarg, **kwarg2)
+                    g.save(update_fields=[field])
+    #флаг участия в группе
+    gr_id = Group.objects.get(**kwarg1).class_id if Group.objects.filter(**kwarg1).count()==1 else None
 
 @login_required
 @teacher_required
 def page_teacher_lk(request):
+    #для вывода авы
     if request.user.teacher.avatar == '-':
         ava_path = 'avatars/no_ava.png'
     else:
          ava_path = request.user.teacher.avatar
+    #проверка заполнен ли класс для препода
+    my_cl = request.user.teacher.teacher_class_num
+    cl_ch= True if my_cl in (9,10,11) else False
+    #функция записи в группу
+    teach_join_group(request, my_cl)     
+    context = { 'email':request.user.email,
+                'name':request.user.teacher.name,
+                'surname':request.user.teacher.surname, 
+                'fathername':request.user.teacher.fathername,
+                'phone': request.user.teacher.phone_number,
+                'tclass': request.user.teacher.teacher_class_num, 
+                'ava_path': ava_path,
+                'gr_id': gr_id,
+                'cl_ch': cl_ch}
+    return render(request, 'teacher/page_teacher_lk.html', context)
+
+@login_required
+@teacher_required
+def page_teach_settings(request):
+    #для вывода авы
+    if request.user.teacher.avatar == '-':
+        ava_path = 'avatars/no_ava.png'
+    else:
+         ava_path = request.user.teacher.avatar
+    #ловим разные запросы
     if request.method == 'POST':
         if 'fathername_frm' in request.POST:
             form = myforms.Fathername_changing_form(request.POST)
@@ -110,10 +229,12 @@ def page_teacher_lk(request):
                 request.user.teacher.phone_number = form.cleaned_data['phone']
                 request.user.teacher.save()
         if 'class_frm' in request.POST:
-            form = myforms.Class_changing_form(request.POST)
-            if form.is_valid():
-                request.user.teacher.teacher_class_num = form.cleaned_data['tclass']
-                request.user.teacher.save()
+            if request.POST['tclass'] is not None:
+                form = myforms.Class_changing_form(request.POST)
+                if form.is_valid():
+                    request.user.teacher.teacher_class_num = form.cleaned_data['tclass']
+                    request.user.teacher.save()
+                    cl_ch = True
         if 'avatar' in request.FILES:
             file = request.FILES['avatar']
             ava_model = request.user.teacher
@@ -122,14 +243,22 @@ def page_teacher_lk(request):
             ava_model.save()
             ava_path = request.user.teacher.avatar
 
+    #проверка заполнен ли класс для препода
+    my_cl = request.user.teacher.teacher_class_num
+    cl_ch= True if my_cl in (9,10,11) else False
+    #функция записи в группу
+    teach_join_group(request, my_cl)
     context = { 'email':request.user.email,
                 'name':request.user.teacher.name,
                 'surname':request.user.teacher.surname, 
                 'fathername':request.user.teacher.fathername,
                 'phone': request.user.teacher.phone_number,
                 'tclass': request.user.teacher.teacher_class_num, 
-                'ava_path': ava_path,}
-    return render(request, 'teacher/page_teacher_lk.html', context)
+                'ava_path': ava_path,
+                'gr_id': gr_id,
+                'cl_ch': cl_ch}
+    return render(request, 'teacher/page_teach_settings.html', context)
+
 
 
 def update_authorization(request):

@@ -8,9 +8,9 @@
                     <span class="text" style="font-size: 32px; font-family: Dela Gothic One, sans-serif">Личная информация преподавателя</span>
             </div>
             <div class="col-auto p-0">
-                <form class="visible-grid my-0 mx-2 visible-grid" action="{% url 'page_teach_settings' %}" style="position: static">
-                    <label for="gear_b_off" style="cursor: pointer;" class="visible-grid "><img src="../static/img/gear_off.png" style="width:40px; height: 40px;"> </label>
-                    <button id="gear_b_off" type="submit" class="rounded-circle visible-grid" style="position: absolute;"></button>
+                <form class="visible-grid my-0 mx-2" action="{% url 'page_teacher_lk' %}" style="position: static;">
+                    <label for="gear_b_on" style="cursor: pointer;" class="visible-grid "><img src="../static/img/gear_on.png" style="width:40px; height: 40px;"></label>
+                    <button id="gear_b_on" type="submit" class="rounded-circle" style="position: absolute;"></button>
                 </form>
             </div> 
             </div>
@@ -19,73 +19,120 @@
         <div class="container text fw-bold" style="margin-top: 40px; font-family: Montserrat-Regular, sans-serif">
             <div class="row rounded-4" style="background-color: white; padding: 20px">
                 <div class="col-6">
-                    <div class="row text-centre visible-grid align-items-center">
+                    <div class="row  text-centre visible-grid align-items-center">
                         <div class="col-auto visible-grid" style="padding: 20px; position: relative;">   
                             {% load static %}
                             <img src="{% static ava_path %}" class="rounded-circle"  width="160" height="160">
+                            <form method="POST" action="{% url 'page_teach_settings' %}" enctype="multipart/form-data" id="ac">
+                                {% csrf_token %}
+                                <label for="avatar" style="position: absolute; top: 150px; left: 150px; cursor: pointer;"><img src="../static/img/ava_change.png"></label>   
+                                <input type="file" id="avatar" name="avatar" accept="image/png, image/jpeg" onchange="ac.submit()">
+                            </form>
                         </div>
                         <div class="col visible-grid" style="font-size: 16px;" >
-                            <div class="row border-bottom visible-grid" style="padding-top: 10px">
-                                <div class="col-3 text-end">
-                                    <p>Фамилия:</p>
+                            <div class="row border-bottom visible-grid align-items-center" style="padding-top: 10px">
+                                <div class="col-3 text-end px-0  visible-grid">
+                                    <p class="visible-grid">Фамилия:</p>
                                 </div>
-                                <div class="col">
-                                    <p style="color: #BABABA">{{surname}}</p>
+                                <div class="col visible-grid">
+                                    <form method="POST" action="{% url 'page_teach_settings' %}" class="visible-grid my-0">
+                                    {% csrf_token %}
+                                    <div class="input-group mb-3 visible-grid">
+                                        <input type="text" class="form-control visible-grid" placeholder={{surname}} style="width: 100px;" name="surname">
+                                        <button class="btn btn-outline-secondary visible-grid" type="submit" id="button-addon2" name="surn_frm"><img src="../static/img/refresh.png"></button>
+                                    </div>  
+                                    </form>
                                 </div>
                             </div>
-                            <div class="row border-bottom visible-grid" style="padding-top: 10px">
-                                <div class="col-3 text-end">
+                            <div class="row border-bottom visible-grid align-items-center" style="padding-top: 10px">
+                                <div class="col-3 text-end px-0">
                                     <p>Имя:</p>
                                 </div>
                                 <div class="col">
-                                    <p style="color: #BABABA">{{name}}</p>
+                                    <form method="POST" action="{% url 'page_teach_settings' %}" class="my-0">
+                                    {% csrf_token %}
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" placeholder={{name}} style="width: 200px;" name="name">
+                                        <button class="btn btn-outline-secondary" type="submit" id="button-addon2" name="name_frm"><img src="../static/img/refresh.png"></button>
+                                    </div>  
+                                    </form>
                                 </div>
                             </div>
-                            <div class="row border-bottom visible-grid" style="padding-top: 10px">
-                                <div class="col-3 text-end">
+                            <div class="row border-bottom visible-grid align-items-center" style="padding-top: 10px">
+                                <div class="col-3 text-end px-0">
                                     <p>Отчество:</p>
                                 </div>
                                 <div class="col">
-                                    <p style="color: #BABABA">{{fathername}}</p> 
+                                    <form method="POST" action="{% url 'page_teach_settings' %}" class="my-0">
+                                    {% csrf_token %}
+                                    <div class="input-group mb-3">
+                                        <input type="text" class="form-control" placeholder={{fathername}} style="width: 200px;" name="fathername">
+                                        <button class="btn btn-outline-secondary" type="submit" id="button-addon2" name="fathername_frm"><img src="../static/img/refresh.png"></button>
+                                    </div>
+                                    </form>  
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row text-centre fw-bold visible-grid" style="font-size: 18px; padding-top: 15px;">
-                        <div class="col-3 text-end px-0 visible-grid"><p class="text visible-grid">Мой рейтинг:</p></div>
+                    <div class="row text-centre fw-bold visible-grid align-items-center" style="font-size: 18px; padding-top: 15px;">
+                        <div class="col-3 text-end visible-grid px-0"><p class="text visible-grid">Мой рейтинг:</p></div>
                         <div class="col visible-grid"><p style="color: #639B6D">-</p></div>
                     </div>
-                    <div class="row text-centre fw-bold" style="font-size: 18px">
+                    <div class="row text-centre fw-bold align-items-center" style="font-size: 18px">
                         <div class="col-3 text-end px-0"><p class="text">Почта:</p></div>
                         <div class="col">
-                            <p style="color: #BABABA">{{email}}</p>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" placeholder={{email}} aria-describedby="button-addon2" style="width: 200px;">
+                                <button class="btn btn-outline-secondary" type="button" id="button-addon2"><img src="../static/img/refresh.png"></button>
+                            </div> 
                         </div>
                     </div>
-                    <div class="row text-centre fw-bold" style="font-size: 18px">
+                    <div class="row text-centre fw-bold align-items-center" style="font-size: 18px">
                         <div class="col-3 text-end px-0"><p class="text">Телефон:</p></div>
                         <div class="col">
-                            <p style="color: #BABABA">{{phone}}</p>
+                            <form method="POST" action="{% url 'page_teach_settings' %}">
+                            {% csrf_token %}
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" placeholder={{phone}} style="width: 200px;" name="phone">
+                                <button class="btn btn-outline-secondary" type="submit" id="button-addon2" name="tel_frm"><img src="../static/img/refresh.png"></button>
+                            </div>  
+                            </form>
                         </div>
                     </div>
-                    <div class="row text-centre fw-bold" style="font-size: 18px">
-                        <div class="col-3 text-end px-0 my-0"><p class="text" >Класс:</p></div>
-                        <div class="col-auto">
-                            <p style="color: #BABABA" class="my-0">{{tclass}}</p>
+                    <div class="row text-centre fw-bold align-items-center visible-grid" style="font-size: 18px">
+                        <div class="col-3 text-end px-0 visible-grid"><p class="text my-0" >Класс:</p></div>
+                        <div class="col-auto visible-grid">
+                            {% if not gr_id %}
+                            <form method="POST" action="{% url 'page_teach_settings' %}" class="my-0">
+                            {% csrf_token %}
+                            <div class="input-group visible-grid">
+                                <select class="form-select text" id="inputGroupSelect04" style="width: 100px; color: #525252;" name="tclass">
+                                  <option selected>{{tclass}}</option>
+                                  <option value="9">9</option>
+                                  <option value="10">10</option>
+                                  <option value="11">11</option>
+                                </select>
+                                <button class="btn btn-outline-secondary" type="submit" name="class_frm"><img src="../static/img/refresh.png"></button>
+                            </div>  
+                            </form>
+                            {% else %}
+                            <div class="col"><p style="color: #BABABA">{{tclass}}</p></div>
+                            {% endif %}
                         </div>
                         {% if cl_ch == False %}
-                        <div class="col-auto">
+                        <div class="col-auto visible-grid">
                             <img src="../static/img/!.png" height="30px">
                         </div>
                         {% endif %}
                     </div>
-                    <div class="row text-centre fw-bold" style="font-size: 18px">
+                    <div class="row text-centre fw-bold align-items-center" style="font-size: 18px">
                         <div class="col-3 text-end px-0"><p class="text">ID группы:</p></div>
                         <div class="col"><p style="color: #BABABA">{{gr_id}}</p></div>
                     </div>
                 </div>
                 <div class="col">
                     <div class="row">Здесь будет статус верификации и кнопка загрузки справки</div>
-                    <div class="row border-bottom visible-grid  align-items-center d-flex"  style="font-size: 16px; padding-top: 20px; padding-bottom: 5px;">
+                    <div class="row border-bottom visible-grid  align-items-center d-flex align-items-center"  style="font-size: 16px; padding-top: 20px; padding-bottom: 5px;">
                     {% if not gr_id %}
                         <div class="col d-flex visible-grid px-0 text" style="color: rgb(148, 80, 105);">Статус: Присоединяйтей к команде преподавателей!</div>
                     {% else %}
@@ -93,7 +140,7 @@
                     {% endif %}
                     {% if gr_id %}
                         <div class="col-auto d-flex visible-grid">
-                            <form method="POST" action="{% url 'page_teacher_lk' %}" class="m-0 visible-grid">
+                            <form method="POST" action="{% url 'page_teach_settings' %}" class="m-0 visible-grid">
                                 {% csrf_token %}
                                 <button type="submit" class="btn-exit-gr visible-grid" name="ex_gr">Выйти</button>
                             </form>
@@ -102,7 +149,7 @@
                     </div>
                     <div class="row text-center p-5 visible-grid">
                     {% if not gr_id %}
-                        <form class="visible-grid" method="POST" action="{% url 'page_teacher_lk' %}">
+                        <form class="visible-grid" method="POST" action="{% url 'page_teach_settings' %}">
                             {% csrf_token %}
                                 <label for="tsb" style="cursor: pointer;">
                                 <svg width="194" height="194" viewBox="0 0 194 194" fill="transparent" xmlns="http://www.w3.org/2000/svg">

@@ -127,25 +127,47 @@ header {
     background-color: rgb(146, 177, 185); 
     border: 3px solid rgb(146, 177, 185); 
 } 
-#avatar {
+#avatar, #tsb, #gear_b_on, #gear_b_off {
     opacity: 0;
     width: 0.1px;
     height: 0.1px;
 }
-lable[for="avatar"] {
-    display: block;
-    background-color: aquamarine;
-    color: red;
+.search_teacher_circle:hover {
+    stroke: rgb(1, 75, 94);
+}
+.search_teacher_circle:hover ~ path {/*сосед через мб через несколько*/
+    fill: rgb(1, 75, 94);
+}
+label[for="tsb"] > svg:active { /*прямой потомок*/
+    transform: scale(0.75);
+}
+label[for="avatar"]:active{
+    transform: scale(0.75);
+}
+label[for="gear_b"]:active {
+    transform: scale(0.75);
+}
+.btn-exit-gr {
+    background-color: rgb(203,91,67); 
+    border: 3px solid rgb(203,91,67);
+    height: 35px;
+    width: auto;
+    padding-left: 20px;
+    padding-right: 20px;
+    border-radius: 50px;
+    font-family: "Montserrat";
+    font-weight: bold;
+    font-size: 19px;
+    color: rgb(255, 255, 255);
+}
+.btn-exit-gr:hover {
+    border: 3px solid rgb(148, 80, 105); 
+}
+.btn-exit-gr:active {
+    background-color: rgb(235, 135, 112); 
+    border: 3px solid rgb(148, 80, 105); 
 }
 
-/*
-.avatar_picker{
-    display: flex;
-    width: 200px;
-    height: 50px;
-    border-radius: 25px;
-    background: linear-gradient(40deg, #ff6ec4, #7873f5);  
-} 
 
 
 /*
