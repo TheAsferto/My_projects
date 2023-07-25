@@ -50,8 +50,8 @@
             <div class="row row-cols-auto text-centre">
                 <div class="col" style="padding: 20px">
                     {% load static %}
-                    <img src="{% static user.avatar %}" class="img_def" width="160" height="160">
-                    <form method="POST" action="{% url 'page_student_lk' %}" enctype="multipart/form-data" id="ac">
+                    <img src="{% static ava_path %}" class="img_def" width="160" height="160" style="border-radius: 50%">
+                    <form action="/{{ profile_id }}/page_student_lk_edit/" method="POST" enctype="multipart/form-data" id="ac">
                         {% csrf_token %}
                         <label for="avatar" class="img_over"><img
                                 src="../../static/img/ava_change.png"></label>
@@ -85,10 +85,6 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row row-cols-auto text-centre fw-bold" style="font-size: 18px">
-                <div class="col"><p class="text">Мой рейтинг:</p></div>
-                <div class="col"><p style="color: #639B6D"></p></div>
             </div>
             <div class="row row-cols-auto text-centre fw-bold" style="font-size: 18px">
                 <div class="col"><p class="text">Почта:</p></div>
