@@ -26,31 +26,22 @@
             <h3 align="center" class=".btn-hmenu"
                 style="font-family:Montserrat; font-weight: 400;font-size: 15px; color: rgb(0, 0, 0)">Ученика</h3>
             <div class="modal-body p-5 pt-0">
-                <form method="POST" action="{% url 'registration_student' %}">
+                <form method="POST" action="{% url 'registration_student' %}" class="needs-validation" novalidate>
                     {% csrf_token %}
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control rounded-5" id="floatingInputName" name="name"
-                               placeholder="name">
-                        <label for="floatingInputName">
-                            <ya-tr-span data-index="16-0" data-translated="true" data-source-lang="en"
-                                        data-target-lang="ru" data-value="name" data-translation="Имя"
-                                        data-ch="0" data-type="trSpan">Имя
-                            </ya-tr-span>
-                        </label>
+                               placeholder="name" required>
+                        <label for="floatingInputName">Имя</label>
                     </div>
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control rounded-5" id="floatingInputSurname" name="surname"
-                               placeholder="surname">
-                        <label for="floatingInputSurname">
-                            <ya-tr-span data-index="16-0" data-translated="true" data-source-lang="en"
-                                        data-target-lang="ru" data-value="surname" data-translation="Фамилия"
-                                        data-ch="0" data-type="trSpan">Фамилия
-                            </ya-tr-span>
-                        </label>
+                               placeholder="surname" required>
+                        <label for="floatingInputSurname">Фамилия</label>
                     </div>
                     <div class="form-floating mb-3">
-                        <select name="class_number" class="form-select rounded-5" id="floatingSelect" aria-label="Floating label select example">
-                            <option selected></option>
+                        <select name="class_number" class="form-select rounded-5" id="floatingSelect"
+                                aria-label="Floating label select example" required>
+                            <option selected disabled value="">Выберите...</option>
                             <option value="9">9</option>
                             <option value="10">10</option>
                             <option value="11">11</option>
@@ -59,31 +50,29 @@
                     </div>
                     <div class="form-floating mb-3">
                         <input type="email" class="form-control rounded-5" id="floatingInputMail" name="email"
-                               placeholder="name@example.com">
-                        <label for="floatingInputMail">
-                            <ya-tr-span data-index="16-0" data-translated="true" data-source-lang="en"
-                                        data-target-lang="ru" data-value="Email address" data-translation="Эл. адрес"
-                                        data-ch="0" data-type="trSpan">Эл. адрес
-                            </ya-tr-span>
-                        </label>
+                               placeholder="name@example.com" required>
+                        <div class="invalid-feedback">
+                            Введите эл. почту.
+                        </div>
+                        <label for="floatingInputMail">Эл. почта</label>
                     </div>
                     <div class="form-floating mb-3">
                         <input type="password" class="form-control rounded-5" id="floatingInputPassword1"
                                name="password1"
-                               placeholder="Пароль">
+                               placeholder="Пароль" required>
+                        <div class="invalid-feedback">
+                            Введите пароль.
+                        </div>
                         <label for="floatingInputPassword1">Пароль</label>
                     </div>
                     <div class="form-floating mb-3">
                         <input type="password" class="form-control rounded-5" id="floatingInputPassword2"
                                name="password2"
-                               placeholder="Повторите пароль">
-                        <label for="floatingInputPassword2">
-                            <ya-tr-span data-index="16-0" data-translated="true" data-source-lang="en"
-                                        data-target-lang="ru" data-value="Repeat password"
-                                        data-translation="Повторите пароль" data-ch="0" data-type="trSpan">Повторите
-                                пароль
-                            </ya-tr-span>
-                        </label>
+                               placeholder="Повторите пароль" required>
+                        <div class="invalid-feedback">
+                            Введите пароль повторно.
+                        </div>
+                        <label for="floatingInputPassword2">Повторите пароль</label>
                     </div>
                     <div class="d-flex justify-content-center">
                         <button type="submit" class="btn">
@@ -92,12 +81,8 @@
                     </div>
                     <hr class="my-4">
                     <small class="text-body-secondary">
-                        <ya-tr-span data-index="17-1" data-translated="true" data-source-lang="en" data-target-lang="ru"
-                                    data-value="By clicking Sign up, you agree to the terms of use."
-                                    data-translation="Нажимая Зарегистрироваться, вы соглашаетесь с условиями использования."
-                                    data-ch="0" data-type="trSpan">Нажимая кнопку "Создать аккаунт", вы соглашаетесь с
-                            условиями использования.
-                        </ya-tr-span>
+                        Нажимая кнопку "Создать аккаунт", вы соглашаетесь с
+                        условиями использования.
                     </small>
 
                 </form>
@@ -105,5 +90,26 @@
         </div>
     </div>
 </div>
+<script>
+(function () {
+  'use strict'
+
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  var forms = document.querySelectorAll('.needs-validation')
+
+  // Loop over them and prevent submission
+  Array.prototype.slice.call(forms)
+    .forEach(function (form) {
+      form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+
+        form.classList.add('was-validated')
+      }, false)
+    })
+})()
+</script>
 </body>
 </html>

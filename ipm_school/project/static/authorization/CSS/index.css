@@ -85,3 +85,8 @@ label {
 .note:empty {
     padding: 10px;
 }
+
+.invalid-feedback{
+    font-size: 14px;
+    margin-left: 14px;
+}
