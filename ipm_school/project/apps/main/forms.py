@@ -10,7 +10,22 @@ import re
 User = get_user_model()
 
 
-class TeacherSignUpForm(forms.ModelForm):
+class CleanFields:
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if email and models.User.objects.filter(email=email).exists():
+            raise forms.ValidationError(u'Email addresses must be unique.')
+        return email
+
+    def clean_password2(self):
+        password1 = self.cleaned_data['password1']
+        password2 = self.cleaned_data['password2']
+        if password1 and password2 and password1 != password2:
+            raise ValidationError("Password don't match")
+        return password2
+
+
+class TeacherSignUpForm(UserCreationForm):
     email = forms.CharField(label="email")
     password1 = forms.CharField(label="password1")
     password2 = forms.CharField(label="password2")
@@ -25,24 +40,13 @@ class TeacherSignUpForm(forms.ModelForm):
         model = User
         fields = ["email", "password1", "password2"]
 
-    def clean_email(self):
-        email = self.cleaned_data.get('email').lower()
-        if email and models.User.objects.filter(email=email).exists():
-            raise forms.ValidationError(u'Email addresses must be unique.')
-        return email
-
-    def clean_password2(self):
-        password1 = self.cleaned_data['password1']
-        password2 = self.cleaned_data['password2']
-        if password1 and password2 and password1 != password2:
-            raise ValidationError("Password don't match")
-        return password2
+    objects = CleanFields()
 
     @transaction.atomic
     def save(self, commit=True):
         user = super().save(commit=False)
         user.is_teacher = True
-        user.set_password(self.cleaned_data["password2"])
+        user.is_active = False
         if commit:
             user.save()
         teacher = models.Teacher.objects.create(user=user,
@@ -54,7 +58,7 @@ class TeacherSignUpForm(forms.ModelForm):
         return user
 
 
-class StudentSignUpForm(forms.ModelForm):
+class StudentSignUpForm(UserCreationForm):
     email = forms.CharField(label="email")
     password1 = forms.CharField(label="password1")
     password2 = forms.CharField(label="password2")
@@ -67,24 +71,13 @@ class StudentSignUpForm(forms.ModelForm):
         model = User
         fields = ["email", "password1", "password2"]
 
-    def clean_email(self):
-        email = self.cleaned_data.get('email').lower()
-        if email and models.User.objects.filter(email=email).exists():
-            raise forms.ValidationError(u'Email addresses must be unique.')
-        return email
-
-    def clean_password2(self):
-        password1 = self.cleaned_data['password1']
-        password2 = self.cleaned_data['password2']
-        if password1 and password2 and password1 != password2:
-            raise ValidationError("Password don't match")
-        return password2
+    objects = CleanFields()
 
     @transaction.atomic
     def save(self, commit=True):
         user = super().save(commit=False)
         user.is_student = True
-        user.set_password(self.cleaned_data["password2"])
+        user.is_active = False
         if commit:
             user.save()
         student = models.Student.objects.create(user=user,
@@ -92,6 +85,14 @@ class StudentSignUpForm(forms.ModelForm):
                                                 surname=self.cleaned_data.get('surname'),
                                                 class_number=self.cleaned_data.get('class_number'))
         return user
+
+
+class EmailVerification(forms.ModelForm):
+    token = forms.CharField(max_length=555)
+
+    class Meta:
+        model = User
+        fields = ['token']
 
 
 class LoginForm(AuthenticationForm):
@@ -106,14 +107,42 @@ class LoginForm(AuthenticationForm):
                'style': 'margin-bottom: 0px;'}))
 
 
-class StudentForm(forms.ModelForm):
+class ResetPasswordEmailForm(forms.ModelForm):
+    email = forms.CharField(label="email")
 
+    redirect_url = forms.CharField(max_length=500, required=False)
+
+    class Meta:
+        model = User
+        fields = ['email']
+
+
+class SetNewPasswordForm(forms.ModelForm):
+    password1 = forms.CharField(label="password1")
+    password2 = forms.CharField(label="password2")
+
+    class Meta:
+        model = User
+        fields = ['password1', 'password2']
+
+    objects = CleanFields()
+
+
+class StudentForm(forms.ModelForm):
     class Meta:
         model = Student
         exclude = ['last_login', 'password', 'user', 'is_superuser', 'group', 'avatar']
 
+
+class StudentForm(forms.ModelForm):
+    class Meta:
+        model = Student
+        exclude = ['last_login', 'password', 'user', 'is_superuser', 'group', 'avatar']
+
+
 class Fathername_changing_form(forms.Form):
     fathername = forms.CharField(label='fathername')
+
     def clean_fathername(self):
         data = self.cleaned_data['fathername']
         if bool(re.search('[A-zA-Z]', data)):
@@ -121,8 +150,10 @@ class Fathername_changing_form(forms.Form):
             raise ValidationError("В отчестве использована латиница")
         return data
 
+
 class Name_changing_form(forms.Form):
     name = forms.CharField(label='name')
+
     def clean_name(self):
         data = self.cleaned_data['name']
         if bool(re.search('[A-zA-Z]', data)):
@@ -130,8 +161,10 @@ class Name_changing_form(forms.Form):
             raise ValidationError("В имени использована латиница")
         return data
 
+
 class Surn_changing_form(forms.Form):
     surname = forms.CharField(label='surname')
+
     def clean_surname(self):
         data = self.cleaned_data['surname']
         if bool(re.search('[A-zA-Z]', data)):
@@ -139,15 +172,19 @@ class Surn_changing_form(forms.Form):
             raise ValidationError("В фамилии использована латиница")
         return data
 
+
 def check_phone(string):
-        pattern1 = re.compile('^[78]?[\s]?[\-\s\(]?\d{3}[\-\s\)]?[\s]?\d{3}\-?\d{2}\-?\d{2}$')
-        pattern2 = re.compile('^\+(?=7)7[\s]?[\-\s\(]?\d{3}[\-\s\)]?[\s]?\d{3}\-?\d{2}\-?\d{2}$')
-        if pattern1.findall(string) or pattern2.findall(string):
-            return True
-        else:
-            return False
+    pattern1 = re.compile('^[78]?[\s]?[\-\s\(]?\d{3}[\-\s\)]?[\s]?\d{3}\-?\d{2}\-?\d{2}$')
+    pattern2 = re.compile('^\+(?=7)7[\s]?[\-\s\(]?\d{3}[\-\s\)]?[\s]?\d{3}\-?\d{2}\-?\d{2}$')
+    if pattern1.findall(string) or pattern2.findall(string):
+        return True
+    else:
+        return False
+
+
 class Tel_changing_form(forms.Form):
     phone = forms.CharField(label='phone')
+
     def clean_phone(self):
         data = self.cleaned_data['phone']
         if not check_phone(data):
@@ -155,8 +192,10 @@ class Tel_changing_form(forms.Form):
             raise ValidationError("Номер не прошел проверку")
         return data
 
+
 class Class_changing_form(forms.Form):
     tclass = forms.CharField(label='tclass')
+
     def clean_tclass(self):
         data = self.cleaned_data['tclass']
         if data in (9, 10, 11):

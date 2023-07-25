@@ -2,10 +2,25 @@ from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import PermissionsMixin
+from rest_framework_simplejwt.tokens import RefreshToken
 import datetime
 
 
-# Create your models here.
+class LowercaseEmailField(models.EmailField):
+    """
+    Override EmailField to convert emails to lowercase before saving.
+    """
+
+    def to_python(self, value):
+        """
+        Convert email to lowercase.
+        """
+        value = super(LowercaseEmailField, self).to_python(value)
+        # Value can be None so check that it's a string before lowercasing.
+        if isinstance(value, str):
+            return value.lower()
+        return value
+
 
 class CustomUserManager(BaseUserManager):
 
@@ -33,21 +48,28 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_login = models.DateField(blank=True, null=True, default=datetime.date.today)
 
     id = models.BigAutoField(primary_key=True)
-    email = models.EmailField(unique=True)
-    password = models.CharField(max_length=100)
+    email = LowercaseEmailField(unique=True)
 
     is_student = models.BooleanField(default=False)
     is_teacher = models.BooleanField(default=False)
 
     is_superuser = models.BooleanField(default=False)
-    is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)  # for superuser
 
     objects = CustomUserManager()
 
     USERNAME_FIELD = "email"
 
+    def tokens(self):
+        refresh = RefreshToken.for_user(self)
+        return ({
+            'refresh': str(refresh),
+            'refresh': str(refresh.access_token),
+        })
 
-class Teacher(AbstractBaseUser):
+
+class Teacher(models.Model):
     CLASS_NUM = [
         (9, 9),
         (10, 10),
@@ -62,17 +84,16 @@ class Teacher(AbstractBaseUser):
     last_login = models.DateField(blank=True, null=True, default=datetime.date.today)
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name='teacher')
-    password = models.CharField(max_length=100)
     name = models.CharField(max_length=50)
     surname = models.CharField(max_length=50)
     university = models.CharField(max_length=50)
     faculty = models.CharField(max_length=50)
     subject = models.CharField(choices=SUBJECT_NAME)
-    is_superuser = models.BooleanField(default=False)
     fathername = models.CharField(max_length=50, default='-')
     phone_number = models.CharField(max_length=20, default='-')
     avatar = models.ImageField(upload_to="avatars/", default='-')
     teacher_class_num = models.IntegerField(choices=CLASS_NUM, null=True)
+
     objects = CustomUserManager()
 
 
@@ -91,7 +112,7 @@ class Group(models.Model):
     teacher_math = models.ForeignKey(Teacher, related_name="teacher_math", null=True, on_delete=models.SET_NULL)
 
 
-class Student(AbstractBaseUser):
+class Student(models.Model):
     CLASS_NUM = [
         (9, 9),
         (10, 10),
@@ -109,7 +130,5 @@ class Student(AbstractBaseUser):
     avatar = models.ImageField(upload_to="avatars/", default='-', verbose_name='Фото')
     class_number = models.IntegerField(choices=CLASS_NUM, null=True, verbose_name='Класс')
     group = models.ForeignKey(Group, null=True, on_delete=models.SET_NULL)
-
-    is_superuser = models.BooleanField(default=False)
 
     objects = CustomUserManager()

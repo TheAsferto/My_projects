@@ -22,11 +22,17 @@
 }
 .modal{
     background: #F6F5F4;
+    display: flex;
     height: 100vh;
 }
 .modal-dialog {
     width: 400px;
     margin-top: 4%;
+    display: flex;
+    min-height: 200px;
+}
+.modal-body {
+    padding: 10px 48px;
 }
 label {
     font-size: 14px;
@@ -68,4 +74,14 @@ label {
     background-color: Transparent;
     background-repeat:no-repeat;
     border: none;
+}
+
+.note {
+    padding: 20px 0;
+    font-family:Montserrat ;
+    font-size: 12px;
+    color: red;
+}
+.note:empty {
+    padding: 10px;
 }

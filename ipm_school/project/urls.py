@@ -16,8 +16,27 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+from rest_framework import permissions
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title="Email-Verify API",
+        default_version='v1',
+        description="An API that will allow users to send sign up and the API will verify there emails by sending the "
+                    "emails using the email submitted on sign up  ",
+
+        terms_of_service="https://www.google.com/policies/terms/",
+        contact=openapi.Contact(email="user@email.com"),
+        license=openapi.License(name="BSD License"),
+    ),
+
+    permission_classes=[permissions.AllowAny],
+)
 
 urlpatterns = [
     path('', include('ipm_school.project.apps.main.urls')),
+    path('', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('admin/', admin.site.urls),
 ]

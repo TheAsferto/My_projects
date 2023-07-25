@@ -1,17 +1,49 @@
-from django.contrib.auth import authenticate, login
+import jwt
 from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import CreateView
 from .models import User, Teacher, Student, Group
 from django.contrib.auth import views as auth_views
-from .forms import StudentSignUpForm, TeacherSignUpForm, LoginForm, StudentForm
+from .forms import StudentSignUpForm, TeacherSignUpForm, EmailVerification, LoginForm, SetNewPasswordForm, \
+    ResetPasswordEmailForm, StudentForm
 from django.urls import reverse
 from .decorators import student_required, teacher_required
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.encoding import smart_str, force_str, smart_bytes, DjangoUnicodeDecodeError
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.contrib.sites.shortcuts import get_current_site
+from .emails import Util
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
+from django.http import HttpResponse
 from . import forms as myforms
+from django.http import HttpResponsePermanentRedirect
+import os
+from rest_framework.exceptions import AuthenticationFailed
 
 
+class CustomRedirect(HttpResponsePermanentRedirect):
+    allowed_schemes = [os.environ.get('APP_SCHEME'), 'http', 'https']
+
+
+def signupformvalid(self, form):
+    user = form.save()
+    user_email = form.cleaned_data['email']
+    user_name = form.cleaned_data['name']
+    tokens = RefreshToken.for_user(user).access_token
+    current_site = get_current_site(self.request).domain
+    relative_link = reverse('email-verify')
+    abs_url = 'http://' + current_site + relative_link + "?token=" + str(tokens)
+    email_body = 'Здравствуйте, ' + user_name + \
+                 '.\nПодтвердите свою почту, перейдя по ссылке ниже: \n' + abs_url
+    data = {'email_body': email_body, 'to_email': user_email,
+            'email_subject': 'Verify your email'}
+
+    Util.send_email(data=data)
+
+    return user_email
 
 
 def index(request):
@@ -48,8 +80,10 @@ class TeacherSignUpView(CreateView):
         return super().get_context_data(**kwargs)
 
     def form_valid(self, form):
-        user = form.save()
-        return redirect('authorization')
+        user_email = signupformvalid(self, form)
+
+        return HttpResponse('Для входа в аккаунт необходимо перейти по ссылке, которую вы получили на указанную '
+                            'электронную почту,' + user_email + '.', status=200)
 
 
 class StudentSignUpView(CreateView):
@@ -62,16 +96,116 @@ class StudentSignUpView(CreateView):
         return super().get_context_data(**kwargs)
 
     def form_valid(self, form):
-        user = form.save()
-        return redirect('authorization')
+        user_email = signupformvalid(self, form)
+
+        return HttpResponse('Для входа в аккаунт необходимо перейти по ссылке, которую вы получили на указанную '
+                            'электронную почту, ' + user_email + '.', status=200)
+
+
+class VerifyEmail(CreateView):
+    form_class = EmailVerification
+
+    token_param_config = openapi.Parameter(
+        'token', in_=openapi.IN_QUERY, description='Description', type=openapi.TYPE_STRING
+    )
+
+    @swagger_auto_schema(manual_parameters=[token_param_config])
+    def get(self, request):
+        token = request.GET.get('token')
+        try:
+            payload = jwt.decode(token, options={"verify_signature": False})
+            user = User.objects.get(id=payload['user_id'])
+            if not user.is_active:
+                user.is_active = True
+                user.save()
+            return redirect('authorization')
+        except jwt.ExpiredSignatureError:
+            return HttpResponse('Activation Expired', status=400)
+        except jwt.exceptions.DecodeError:
+            return HttpResponse('Invalid token', status=400)
+
+
+class ResetPassword(CreateView):
+    template_name = 'authorization/reset_password_email.html'
+    form_class = ResetPasswordEmailForm
+
+    def post(self, request):
+        form = ResetPasswordEmailForm(request.POST)
+        user_email = form.data['email']
+        if User.objects.filter(email=user_email).exists():
+            user = User.objects.get(email=user_email)
+
+            if user.is_teacher:
+                teacher = Teacher.objects.get(user_id=user.id)
+                user_name = teacher.name
+            elif user.is_student:
+                student = Student.objects.get(user_id=user.id)
+                user_name = student.name
+
+            uidb64 = urlsafe_base64_encode(smart_bytes(user.id))
+            token = PasswordResetTokenGenerator().make_token(user)
+
+            current_site = get_current_site(request=self.request).domain
+            realtivelink = reverse('password-reset-confirm', kwargs={'uidb64': uidb64, 'token': token})
+            absurl = 'http://' + current_site + realtivelink
+            email_body = 'Здравствуйте, ' + user_name + '.\nИспользуйте ссылку ниже для восстановления пароля: \n' + \
+                         absurl
+            data = {'email_body': email_body, 'to_email': user.email, 'email_subject': 'Reset your password'}
+            Util.send_email(data)
+            return HttpResponse('Для дальнейшей смены пароля необходимо перейти по ссылке, которую вы получили '
+                                'на указанную электронную почту, ' + user_email)
+        return HttpResponse('Аккаунтов зарегестрированных на почту' + user_email + ' не существует.', status=401)
+
+
+class PasswordTokenCheck(CreateView):
+    form_class = SetNewPasswordForm
+
+    def get(self, request, uidb64, token):
+        try:
+            id = smart_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(id=id)
+
+            if not PasswordResetTokenGenerator().check_token(user, token):
+                return HttpResponse('token is not valid, please check the new one', status=401)
+            return CustomRedirect(request.build_absolute_uri('/password-reset-complete' +
+                                                             '?token_valid=True&'
+                                                             'message=Credentials Valid&'
+                                                             'uidb64=' + uidb64 +
+                                                             '&token=' + token))
+        except DjangoUnicodeDecodeError as indentifier:
+            return HttpResponse('token is not valid, please check the new one', status=401)
+
+
+class SetNewPassword(CreateView):
+    model = User
+    template_name = 'authorization/reset_password_complete.html'
+    form_class = SetNewPasswordForm
+
+    def post(self, request):
+        try:
+            form = self.form_class(request.POST)
+            password = form.data['password2']
+            token = request.GET.get('token', "")
+            uidb64 = request.GET.get('uidb64', "")
+            id = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(id=id)
+            if not PasswordResetTokenGenerator().check_token(user, token):
+                raise AuthenticationFailed('The reset link is invalid', 401)
+            print(form.is_valid())
+            if form.is_valid():
+                user.set_password(password)
+                user.save()
+                return HttpResponse('Password is reset successfully', status=200)
+                # return reverse('authorization')
+            else:
+                print('пароли не совпадают')
+        except Exception as e:
+            raise AuthenticationFailed('The reset link is invalid', 401)
 
 
 class LoginView(auth_views.LoginView):
     template_name = 'authorization/authorization.html'
     form_class = LoginForm
-
-    def get_context_data(self, **kwargs):
-        return super().get_context_data(**kwargs)
 
     def get_success_url(self):
         user = self.request.user
@@ -290,10 +424,10 @@ def page_teach_settings(request):
     teach_join_group(request, my_cl)
     context = { 'email':request.user.email,
                 'name':request.user.teacher.name,
-                'surname':request.user.teacher.surname, 
+                'surname':request.user.teacher.surname,
                 'fathername':request.user.teacher.fathername,
                 'phone': request.user.teacher.phone_number,
-                'tclass': request.user.teacher.teacher_class_num, 
+                'tclass': request.user.teacher.teacher_class_num,
                 'ava_path': ava_path,
                 'gr_id': gr_id,
                 'cl_ch': cl_ch}
@@ -302,7 +436,7 @@ def page_teach_settings(request):
 
 
 def update_authorization(request):
-    return render(request, "authorization/update_authorization.html", {})
+    return render(request, "authorization/reset_password_email.html", {})
 
 
 def page_student_class(request):
@@ -337,18 +471,7 @@ def page_student_class(request):
 def page_teacher_class(request):
     return render(request, "page_teacher_class.html", {})
 
-def logout(request):
-    logout(request) 
-    return redirect('index')
 
-# def my_view(request):
-#     username = request.POST["username"]
-#     password = request.POST["password"]
-#     user = authenticate(request, username=username, password=password)
-#     if user is not None:
-#         login(request, user)
-#         # Redirect to a success page.
-#         ...
-#     else:
-#         # Return an 'invalid login' error message.
-#         ...
+def logout(request):
+    logout(request)
+    return redirect('index')

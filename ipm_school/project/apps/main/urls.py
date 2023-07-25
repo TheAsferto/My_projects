@@ -13,6 +13,10 @@ urlpatterns = [
                                                    authentication_form=LoginForm
                                                    ),
          name='authorization'),
+    path('email-verify/', views.VerifyEmail.as_view(), name="email-verify"),
+    path('password-reset/', views.ResetPassword.as_view(), name="password-reset"),
+    path('password-reset-confirm/<uidb64>/<token>/', views.PasswordTokenCheck.as_view(), name="password-reset-confirm"),
+    path('password-reset-complete/', views.SetNewPassword.as_view(), name="password-reset-complete"),
     path('update_authorization/', views.update_authorization, name='update_authorization'),
     path('page_student_lk/', views.page_student_lk, name='page_student_lk'),
     path('page_student_lk/student_join_group', views.student_join_group, name='student_join_group'),

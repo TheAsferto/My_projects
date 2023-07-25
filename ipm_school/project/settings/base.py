@@ -23,7 +23,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'ipm_school.project.apps.main.apps.MainConfig'  # app main
+    'ipm_school.project.apps.main.apps.MainConfig',  # app main
+    'rest_framework',
+    'django_rest_passwordreset',
 ]
 
 MIDDLEWARE = [
