@@ -83,7 +83,7 @@ class TeacherSignUpView(CreateView):
         user_email = signupformvalid(self, form)
 
         return HttpResponse('Для входа в аккаунт необходимо перейти по ссылке, которую вы получили на указанную '
-                            'электронную почту,' + user_email + '.', status=200)
+                            'электронную почту, ' + user_email + '.', status=200)
 
 
 class StudentSignUpView(CreateView):
@@ -150,11 +150,11 @@ class ResetPassword(CreateView):
             absurl = 'http://' + current_site + realtivelink
             email_body = 'Здравствуйте, ' + user_name + '.\nИспользуйте ссылку ниже для восстановления пароля: \n' + \
                          absurl
-            data = {'email_body': email_body, 'to_email': user.email, 'email_subject': 'Reset your password'}
+            data = {'email_body': email_body, 'to_email': user.email, 'email_subject': 'Пароль успешно сменен'}
             Util.send_email(data)
             return HttpResponse('Для дальнейшей смены пароля необходимо перейти по ссылке, которую вы получили '
                                 'на указанную электронную почту, ' + user_email)
-        return HttpResponse('Аккаунтов зарегестрированных на почту' + user_email + ' не существует.', status=401)
+        return HttpResponse('Аккаунтов зарегестрированных на почту ' + user_email + ' не существует.', status=401)
 
 
 class PasswordTokenCheck(CreateView):
