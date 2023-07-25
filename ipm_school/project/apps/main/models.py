@@ -40,6 +40,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_teacher = models.BooleanField(default=False)
 
     is_superuser = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
 
     objects = CustomUserManager()
 
@@ -72,7 +73,6 @@ class Teacher(AbstractBaseUser):
     phone_number = models.CharField(max_length=20, default='-')
     avatar = models.ImageField(upload_to="avatars/", default='-')
     teacher_class_num = models.IntegerField(choices=CLASS_NUM, null=True)
-
     objects = CustomUserManager()
 
 
@@ -102,9 +102,12 @@ class Student(AbstractBaseUser):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True, related_name='student')
     password = models.CharField(max_length=100)
-    name = models.CharField(max_length=100)
-    surname = models.CharField(max_length=100)
-    class_number = models.IntegerField(choices=CLASS_NUM, null=True)
+    name = models.CharField(max_length=100, verbose_name='Имя')
+    surname = models.CharField(max_length=100, verbose_name='Фамилия')
+    fathername = models.CharField(max_length=50, default='-', verbose_name='Отчество')
+    phone_number = models.CharField(max_length=20, default='-', verbose_name='Номер телефона')
+    avatar = models.ImageField(upload_to="avatars/", default='-', verbose_name='Фото')
+    class_number = models.IntegerField(choices=CLASS_NUM, null=True, verbose_name='Класс')
     group = models.ForeignKey(Group, null=True, on_delete=models.SET_NULL)
 
     is_superuser = models.BooleanField(default=False)

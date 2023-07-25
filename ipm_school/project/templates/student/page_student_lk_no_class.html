@@ -104,35 +104,16 @@
             </div>
             <div class="row row-cols-auto text-centre fw-bold" style="font-size: 18px">
                 <div class="col"><p class="text">ID группы:</p></div>
-                <div class="col"><p style="color: #BABABA">{{ user.group_id }}</p></div>
+                <div class="col"><p style="color: #BABABA"></p></div>
             </div>
         </div>
         <div class="col">
-            <div class="row border-bottom" style="font-size: 16px; padding-top: 20px">Расписание группы</div>
-            <div class="row" style="padding-top: 10px; padding-right: 250px; font-size: 14px">
-                <table class="table table-bordered">
-
-                    <thead class="table-light">
-                    <tr>
-                        <th>День недели</th>
-                        <th>Предмет</th>
-                        <th>Время</th>
-                    </tr>
-                    </thead>
-
-                    <tbody>
-
-                    {% for elem in subjects %}
-                    <tr>
-                        <th></th>
-                        <td>{{ elem }}</td>
-                        <td></td>
-                    </tr>
-                    {% endfor %}
-
-                    </tbody>
-
-                </table>
+            <div class="row justify-content-center border-bottom">Для поиска учебной группы нажмите на кнопку</div>
+            <div class="d-flex justify-content-center" style="margin-top: 10%">
+                <form action="{% url 'student_join_group' %}" method="post">
+                    {% csrf_token %}
+                    <button style="border: none; background-color: white" type="submit"><img src="../../static/img/image_2023-07-21_13-20-43.png" width="194px" height="194px"></button>
+                </form>
             </div>
         </div>
     </div>

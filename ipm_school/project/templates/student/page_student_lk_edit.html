@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Редактирование профиля</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link rel="stylesheet" href="../../static/student/student.css">
+    <style>
+        @font-face {
+            font-family: Dela Gothic One;
+            src: url("../../static/fonts/DelaGothicOne-Regular.ttf");
+        }
+        @font-face {
+            font-family: Montserrat-Regular;
+            src: url("../../static/fonts/Montserrat-Regular.otf");
+        }
+        @font-face {
+            font-family: Montserrat-Bold;
+            src: url("../../static/fonts/Montserrat-Bold.otf");
+        }
+    </style>
+
+</head>
+
+<body style="background-color: #F6F5F4">
+
+<div class="container text fw-bold" style="width: 30%; margin-top: 40px; font-family: Montserrat-Regular, sans-serif">
+    <div class="row rounded-4 shadow-lg p-3 mb-5 rounded" style="background-color: white; padding: 20px">
+        <form action="/{{ profile_id }}/page_student_lk_edit/" autocomplete="on" method="POST">
+            {% csrf_token %}
+            {{ user_form.as_p }}
+            <button class="btn-reg" type="submit">Сохранить изменения</button>
+        </form>
+    </div>
+</div>
+
+</body>

@@ -1,9 +1,10 @@
 from django.contrib.auth import authenticate, login
 from django.shortcuts import render, redirect
+from django.views import View
 from django.views.generic import CreateView
-from .models import User, Teacher, Group, Student
+from .models import User, Teacher, Student, Group
 from django.contrib.auth import views as auth_views
-from .forms import StudentSignUpForm, TeacherSignUpForm, LoginForm
+from .forms import StudentSignUpForm, TeacherSignUpForm, LoginForm, StudentForm
 from django.urls import reverse
 from .decorators import student_required, teacher_required
 from django.contrib.auth.decorators import login_required
@@ -86,17 +87,54 @@ class LoginView(auth_views.LoginView):
 @login_required
 @student_required
 def page_student_lk(request):
-    mail = request.user.email
-    student_name = Student.objects.get(user__email__contains=mail).name
-#           if request.user.student.avatar == '-':
-    ava_path = 'avatars/no_ava.png'
-#           else:
-#           ava_path = request.user.teacher.avatar
-    context = {'name':student_name, 'ava_path':ava_path}
-    print('студент ', student_name)
-    context = {'name':student_name, 'ava_path':ava_path}
-
+    profile_id = request.user.id
+    email = request.user.email
+    user = Student.objects.get(user__id__contains=profile_id)
+    group_id = user.group_id
+    group = Group.objects.get(class_id__contains=group_id)
+    subjects = []
+    if group.teacher_math:
+        subjects.append('Математика')
+    if group.teacher_ph:
+        subjects.append('Физика')
+    if group.teacher_inf:
+        subjects.append('Информатика')
+    if user.avatar == '-':
+        user.avatar = 'avatars/no_ava.png'
+    context = {'profile_id': profile_id, 'user': user, 'email': email, 'subjects': subjects}
+    if not user.group_id:
+        return render(request, 'student/page_student_lk_no_class.html', context)
     return render(request, 'student/page_student_lk.html', context)
+
+
+def student_join_group(request):
+    profile_id = request.user.id
+    user = Student.objects.get(user__id__contains=profile_id)
+    groups = Group.objects.filter(class_number=request.user.student.class_number)
+    for row in groups:
+        user.group_id = row.class_id
+        user.save()
+        break
+    return redirect('page_student_lk')
+
+
+class StudentEditFormView(View):
+    def get(self, request, profile_id):
+        user = Student.objects.get(user__id__contains=profile_id)
+        user_form = StudentForm(instance=user)
+        context = {'user_form': user_form, 'profile_id': profile_id}
+        return render(request, 'student/page_student_lk_edit.html', context)
+
+    def post(self, request, profile_id):
+        user = Student.objects.get(user__id__contains=profile_id)
+        user.surname = request.POST.get('surname')
+        user.name = request.POST.get('name')
+        user.fathername = request.POST.get('fathername')
+        user.phone_number = request.POST.get('phone_number')
+        user.class_number = request.POST.get('class_number')
+        user.save()
+        return redirect('page_student_lk')
+
 
 #функция записи в группу
 def teach_join_group(request, my_cl):
@@ -122,7 +160,7 @@ def teach_join_group(request, my_cl):
         if 't_gr_search' in request.POST:
             print("Принят запрос на поиск группы")
             if my_gr.count() == 0 and my_cl: #допускаем к записи только тех, кто еще не записан
-                groups = Group.objects.filter(**kwarg, class_number=request.user.teacher.teacher_class_num)    
+                groups = Group.objects.filter(**kwarg, class_number=request.user.teacher.teacher_class_num)
                 print("Найдено групп:" ,groups.count())
                 if groups.count()>0:
                     for row in groups:
@@ -133,9 +171,9 @@ def teach_join_group(request, my_cl):
                         if row.teacher_ph_id != None:
                             k += 1
                         if row.teacher_math_id != None:
-                            k += 1    
+                            k += 1
                         if k == 2:
-                            print(f'Обнаружена группа (id: {row.class_id}) с двумя преподами - начинаю запись') 
+                            print(f'Обнаружена группа (id: {row.class_id}) с двумя преподами - начинаю запись')
                             g = Group(**kwarg1, **kwarg2,)
                             g.save(update_fields=[field])
                             break
@@ -143,9 +181,9 @@ def teach_join_group(request, my_cl):
                             print('Обнаружена группа с одним преподом - начинаю запись')
                             g = Group(**kwarg1, **kwarg2,)
                             g.save(update_fields=[field])
-                            break      
+                            break
                 else:
-                    print('Групп без преподавателя не найдено - создаю новою группу') 
+                    print('Групп без преподавателя не найдено - создаю новою группу')
                     g = Group(**kwarg1, class_number=request.user.teacher.teacher_class_num)
                     g.save()
             elif my_gr == 1:
@@ -164,7 +202,7 @@ def teach_join_group(request, my_cl):
                 if row.teacher_ph_id != None:
                     k += 1
                 if row.teacher_math_id != None:
-                    k += 1    
+                    k += 1
                 if k == 1:
                     g = Group.objects.get(**kwarg1).delete()
                 else:
@@ -173,6 +211,7 @@ def teach_join_group(request, my_cl):
                     g.save(update_fields=[field])
     #флаг участия в группе
     gr_id = Group.objects.get(**kwarg1).class_id if Group.objects.filter(**kwarg1).count()==1 else None
+
 
 @login_required
 @teacher_required
@@ -186,13 +225,13 @@ def page_teacher_lk(request):
     my_cl = request.user.teacher.teacher_class_num
     cl_ch= True if my_cl in (9,10,11) else False
     #функция записи в группу
-    teach_join_group(request, my_cl)     
+    teach_join_group(request, my_cl)
     context = { 'email':request.user.email,
                 'name':request.user.teacher.name,
-                'surname':request.user.teacher.surname, 
+                'surname':request.user.teacher.surname,
                 'fathername':request.user.teacher.fathername,
                 'phone': request.user.teacher.phone_number,
-                'tclass': request.user.teacher.teacher_class_num, 
+                'tclass': request.user.teacher.teacher_class_num,
                 'ava_path': ava_path,
                 'gr_id': gr_id,
                 'cl_ch': cl_ch}
@@ -266,7 +305,32 @@ def update_authorization(request):
 
 
 def page_student_class(request):
-    return render(request, "student/page_student_class.html", {})
+    global teacher_inf, teacher_ph, teacher_math
+    profile_id = request.user.id
+    user = Student.objects.get(user__id__contains=profile_id)
+    group_id = user.group_id
+    group = Group.objects.get(class_id__contains=group_id)
+    subjects = []
+    teachers = []
+    if group.teacher_math:
+        teacher_math = Teacher.objects.get(user__id__contains=group.teacher_math_id)
+        subjects.append('Математика')
+        teachers.append(teacher_math)
+    if group.teacher_ph:
+        teacher_ph = Teacher.objects.get(user__id__contains=group.teacher_ph_id)
+        subjects.append('Физика')
+        teachers.append(teacher_ph)
+    if group.teacher_inf:
+        teacher_inf = Teacher.objects.get(user__id__contains=group.teacher_inf_id)
+        subjects.append('Информатика')
+        teachers.append(teacher_inf)
+    context = {
+        'profile_id': profile_id,
+        'user': user,
+        'subjects': subjects,
+        'teachers': teachers
+    }
+    return render(request, "student/page_student_class.html", context)
 
 
 def page_teacher_class(request):

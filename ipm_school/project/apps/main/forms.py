@@ -4,7 +4,9 @@ from . import models
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.db import transaction
-import re 
+from .models import Student
+import re
+
 User = get_user_model()
 
 
@@ -104,6 +106,12 @@ class LoginForm(AuthenticationForm):
                'style': 'margin-bottom: 0px;'}))
 
 
+class StudentForm(forms.ModelForm):
+
+    class Meta:
+        model = Student
+        exclude = ['last_login', 'password', 'user', 'is_superuser', 'group', 'avatar']
+
 class Fathername_changing_form(forms.Form):
     fathername = forms.CharField(label='fathername')
     def clean_fathername(self):
@@ -112,7 +120,7 @@ class Fathername_changing_form(forms.Form):
             print("В отчестве использована латиница")
             raise ValidationError("В отчестве использована латиница")
         return data
-    
+
 class Name_changing_form(forms.Form):
     name = forms.CharField(label='name')
     def clean_name(self):
@@ -130,7 +138,7 @@ class Surn_changing_form(forms.Form):
             print("В фамилии использована латиница")
             raise ValidationError("В фамилии использована латиница")
         return data
-    
+
 def check_phone(string):
         pattern1 = re.compile('^[78]?[\s]?[\-\s\(]?\d{3}[\-\s\)]?[\s]?\d{3}\-?\d{2}\-?\d{2}$')
         pattern2 = re.compile('^\+(?=7)7[\s]?[\-\s\(]?\d{3}[\-\s\)]?[\s]?\d{3}\-?\d{2}\-?\d{2}$')
@@ -146,7 +154,7 @@ class Tel_changing_form(forms.Form):
             print("Номер не прошел проверку")
             raise ValidationError("Номер не прошел проверку")
         return data
-    
+
 class Class_changing_form(forms.Form):
     tclass = forms.CharField(label='tclass')
     def clean_tclass(self):
