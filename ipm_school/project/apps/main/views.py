@@ -91,14 +91,15 @@ def page_student_lk(request):
     email = request.user.email
     user = Student.objects.get(user__id__contains=profile_id)
     group_id = user.group_id
-    group = Group.objects.get(class_id__contains=group_id)
     subjects = []
-    if group.teacher_math:
-        subjects.append('Математика')
-    if group.teacher_ph:
-        subjects.append('Физика')
-    if group.teacher_inf:
-        subjects.append('Информатика')
+    if group_id:
+        group = Group.objects.get(class_id__contains=group_id)
+        if group.teacher_math:
+            subjects.append('Математика')
+        if group.teacher_ph:
+            subjects.append('Физика')
+        if group.teacher_inf:
+            subjects.append('Информатика')
     if user.avatar == '-':
         user.avatar = 'avatars/no_ava.png'
     context = {'profile_id': profile_id, 'user': user, 'email': email, 'subjects': subjects}
