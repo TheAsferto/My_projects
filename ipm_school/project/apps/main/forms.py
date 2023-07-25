@@ -99,12 +99,16 @@ class LoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super(LoginForm, self).__init__(*args, **kwargs)
 
-    username = forms.CharField(widget=forms.TextInput(
+    username = forms.CharField(widget=forms.EmailInput(
         attrs={'class': 'form-control rounded-5',
-               'id': 'floatingInputEmail'}))
+               'placeholder': '',
+               'id': 'floatingInputEmail',
+               'required': ''}))
     password = forms.CharField(widget=forms.PasswordInput(
         attrs={'class': 'form-control rounded-5',
-               'style': 'margin-bottom: 0px;'}))
+               'placeholder': '',
+               'id': 'floatingInputPassword',
+               'required': ''}))
 
 
 class ResetPasswordEmailForm(forms.ModelForm):
