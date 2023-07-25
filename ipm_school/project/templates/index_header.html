@@ -6,17 +6,28 @@
     <title>IPM</title>
       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <link rel="stylesheet" href="../static/CSS/ind.css">
+      <style>
+          @font-face {
+              font-family: Dela Gothic One;
+              src: url("../static/fonts/DelaGothicOne-Regular.ttf");
+          }
+
+          @font-face {
+              font-family: Montserrat-Regular;
+              src: url("../static/fonts/Montserrat-Regular.otf");
+          }
+
+          @font-face {
+              font-family: Montserrat-Bold;
+              src: url("../static/fonts/Montserrat-Bold.otf");
+          }
+      </style>
   </head>
   <header class="visible-grid">
     <div class="container visible-grid">
         <div class="row text-center align-items-center visible-grid">
             <div class="col-auto text-start logo-gstyle visible-grid" style="padding-left: 0px;" >
                 <a href="/"  class="btn-logo-style visible-grid">IPM school</a>
-                {% if request.user.is_authenticated %}
-                  AUTHED
-                {% else %}
-                  GUEST
-                {% endif %}
             </div>
             {% if not request.user.is_authenticated %}
               <div class="col-auto hmenu-gstyle visible-grid">
@@ -32,17 +43,6 @@
                 {% endif %}
               {% else %}
                 <a href="/page_student_lk/" class="btn-hmenu">Для учеников</a>
-              {% endif %}
-            </div>
-            <div class="col-auto hmenu-gstyle visible-grid">
-              {% if request.user.is_authenticated %}
-                {% if request.user.is_teacher %}
-                <a href="#" class="btn-hmenu">Учебный класс</a>
-                {% else %}
-                <a href="#" class="btn-hmenu">Учебный класс</a>
-                {% endif %}
-              {% else %}
-                  <a href="/page_teacher_lk/" class="btn-hmenu">Для учителей</a>
               {% endif %}
             </div>
             <div class="col visible-grid">
@@ -62,7 +62,6 @@
                         <span>{{name}}</span>
                       </a>
                   {% endif %}
-
                   </div>
                   <div class="col-auto visible-grid" >
                     <a href="/logout/" class="btn-login">Выйти <img src="../static/img/logout.png"></a>

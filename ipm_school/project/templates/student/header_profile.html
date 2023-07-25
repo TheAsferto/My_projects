@@ -14,7 +14,7 @@
             {% endif %}
             <div class="col text-end" style="padding-right: 0px; justify-items: end">
                 {% load static %}
-                <img src="{% static user.avatar %}" width="40px" height="40px">
+                <img src="{% static ava_path %}" width="40px" height="40px" style="border-radius: 50%">
             </div>
             <div class="col-auto text-end border-right" style="padding-right: 0px;">
                 <div class="btn-hmenu">{{ user.name }}</div>

@@ -235,8 +235,10 @@ def page_student_lk(request):
         if group.teacher_inf:
             subjects.append('Информатика')
     if user.avatar == '-':
-        user.avatar = 'avatars/no_ava.png'
-    context = {'profile_id': profile_id, 'user': user, 'email': email, 'subjects': subjects}
+        ava_path = 'avatars/no_ava.png'
+    else:
+        ava_path = user.avatar
+    context = {'profile_id': profile_id, 'user': user, 'email': email, 'subjects': subjects, 'ava_path': ava_path}
     if not user.group_id:
         return render(request, 'student/page_student_lk_no_class.html', context)
     return render(request, 'student/page_student_lk.html', context)
@@ -261,6 +263,12 @@ class StudentEditFormView(View):
         return render(request, 'student/page_student_lk_edit.html', context)
 
     def post(self, request, profile_id):
+        if 'avatar' in request.FILES:
+            ava_model = request.user.student
+            ava_model.avatar.delete()
+            ava_model.avatar = request.FILES['avatar']
+            ava_model.save()
+            return redirect('page_student_lk')
         user = Student.objects.get(user__id__contains=profile_id)
         user.surname = request.POST.get('surname')
         user.name = request.POST.get('name')
